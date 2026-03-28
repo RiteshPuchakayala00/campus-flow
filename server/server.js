@@ -52,12 +52,9 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err));
 
-// Remove or wrap the app.listen line:
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-    });
-}
+// Start the server for Render
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
 
-// Add this line at the very bottom so Vercel can use it:
 module.exports = app;
