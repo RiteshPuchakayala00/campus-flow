@@ -5,6 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import api from '../api/axios';
 import Toast, { useToast } from '../components/Toast';
 import ConfirmationModal from '../components/ConfirmationModal';
+import ScheduleModal from '../components/ScheduleModal';
 
 const AdminPanel = () => {
     const { user, logout } = useContext(AuthContext);
@@ -29,6 +30,9 @@ const AdminPanel = () => {
     const [vCap, setVCap] = useState(60);
     const [vImageUrl, setVImageUrl] = useState('');
     const [vLoading, setVLoading] = useState(false);
+
+    // Master schedule modal
+    const [scheduleModalVenue, setScheduleModalVenue] = useState(null);
 
     // Add user form
     const [uName, setUName] = useState('');
@@ -223,11 +227,18 @@ const AdminPanel = () => {
                                         </td>
                                         <td className="py-3 text-gray-300">{v.capacity}</td>
                                         <td className="py-3">
-                                            <button onClick={() => deleteVenue(v._id, v.name)}
-                                                className="text-xs px-2 py-1 rounded-lg"
-                                                style={{ background: 'rgba(224,32,32,0.15)', color: '#f87171' }}>
-                                                Delete
-                                            </button>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => setScheduleModalVenue(v)}
+                                                    className="text-xs px-2 py-1 rounded-lg font-medium"
+                                                    style={{ background: 'rgba(59,130,246,0.15)', color: '#60a5fa' }}>
+                                                    Schedule
+                                                </button>
+                                                <button onClick={() => deleteVenue(v._id, v.name)}
+                                                    className="text-xs px-2 py-1 rounded-lg font-medium"
+                                                    style={{ background: 'rgba(224,32,32,0.15)', color: '#f87171' }}>
+                                                    Delete
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -316,6 +327,18 @@ const AdminPanel = () => {
                     onConfirm={handleConfirmDelete}
                     onCancel={() => setConfirmDelete(prev => ({ ...prev, isOpen: false }))}
                     confirmText="Delete Permanently"
+                />
+
+                <ScheduleModal
+                    isOpen={!!scheduleModalVenue}
+                    venue={scheduleModalVenue}
+                    onUpdateAlert={showToast}
+                    onClose={(updatedVenue) => {
+                        setScheduleModalVenue(null);
+                        if (updatedVenue) {
+                            setVenues(prev => prev.map(v => v._id === updatedVenue._id ? updatedVenue : v));
+                        }
+                    }}
                 />
 
             </main>

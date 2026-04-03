@@ -81,4 +81,21 @@ router.delete('/venues/:id', auth, sysadminOnly, async (req, res) => {
     }
 });
 
+// @route   PUT api/admin/venues/:id/schedule
+// @desc    Update venue's weekly master schedule
+// @access  Private (SysAdmin)
+router.put('/venues/:id/schedule', auth, async (req, res) => {
+    if (req.user.role !== 'sysadmin') return res.status(403).json({ message: 'Sysadmin only' });
+    try {
+        const venue = await Venue.findById(req.params.id);
+        if (!venue) return res.status(404).json({ message: 'Venue not found' });
+        
+        venue.weekly_schedule = req.body.weekly_schedule;
+        await venue.save();
+        res.json(venue);
+    } catch (err) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
 module.exports = router;

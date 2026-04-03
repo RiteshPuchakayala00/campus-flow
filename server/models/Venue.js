@@ -24,7 +24,13 @@ const venueSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: false // Optional: link venue to specific admin
-    }
+    },
+    weekly_schedule: [{
+        day: { type: Number, required: true }, // 0 = Sun, 1 = Mon, ..., 6 = Sat
+        start_time: { type: String, required: true },
+        end_time: { type: String, required: true },
+        label: { type: String, required: true }
+    }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Venue', venueSchema);

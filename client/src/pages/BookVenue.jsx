@@ -109,6 +109,25 @@ const BookVenue = () => {
                             {venue.type === 'classroom' ? 'Classroom' : 'Seminar Hall'}
                         </span>
                     </div>
+
+                    {venue.weekly_schedule && venue.weekly_schedule.length > 0 && (
+                        <div className="mt-4 pt-4 border-t border-white/10">
+                            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">🔒 Permanently Locked For Regular Classes</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {venue.weekly_schedule.map((block, i) => (
+                                    <span key={i} className="text-xs bg-red-500/10 text-red-300 border border-red-500/20 px-2 py-1 flex items-center gap-1 group relative cursor-help" style={{ borderRadius: '4px' }}>
+                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                        <span className="font-bold">{['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][block.day]}</span>
+                                        <span className="opacity-80 ml-1">{block.start_time} - {block.end_time}</span>
+                                        
+                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 w-max px-2 py-1 bg-black/90 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none border border-white/10">
+                                            {block.label}
+                                        </div>
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Booking Form */}

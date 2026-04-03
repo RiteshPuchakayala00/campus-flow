@@ -27,6 +27,18 @@ exports.createBooking = async (req, res) => {
             return res.status(404).json({ message: 'Venue not found' });
         }
 
+        // Master Schedule Overlap Check (Fixed weekly classes)
+        const reqDay = new Date(date).getDay();
+        if (venue.weekly_schedule && venue.weekly_schedule.length > 0) {
+            const masterConflict = venue.weekly_schedule.find(block => 
+                block.day === reqDay && 
+                (start_time < block.end_time && end_time > block.start_time)
+            );
+            if (masterConflict) {
+                return res.status(409).json({ message: `Time slot unavailable. Venue is reserved for a regular class (${masterConflict.label}).` });
+            }
+        }
+
         // REQ_19: Validation for Seminar Hall events
         if (venue.type === 'seminar_hall') {
             if (!event_name || !participants_count) {
@@ -236,6 +248,19 @@ exports.updateBooking = async (req, res) => {
 
         // REQ_35 & REQ_31: Check venue availability for the new time slot
         if (date && start_time && end_time) {
+
+            // Master Schedule Check
+            const reqDay = new Date(date).getDay();
+            if (booking.venue_id && booking.venue_id.weekly_schedule) {
+                const masterConflict = booking.venue_id.weekly_schedule.find(block => 
+                    block.day === reqDay && 
+                    (start_time < block.end_time && end_time > block.start_time)
+                );
+                if (masterConflict) {
+                    return res.status(409).json({ message: `Time slot unavailable. Venue is reserved for a regular class (${masterConflict.label}).` });
+                }
+            }
+
             const overlappingBookings = await Booking.find({
                 _id: { $ne: booking._id }, // Exclude current booking
                 venue_id: booking.venue_id._id,
