@@ -55,7 +55,7 @@ const AnimatedRoutes = () => {
         <Route path="/login" element={<AnimatedPage><Login /></AnimatedPage>} />
         <Route path="/dashboard" element={<ProtectedRoute><AnimatedPage><Dashboard /></AnimatedPage></ProtectedRoute>} />
         <Route path="/book/:id" element={<ProtectedRoute allowedRoles={['faculty', 'cr', 'event_organizer']}><AnimatedPage><BookVenue /></AnimatedPage></ProtectedRoute>} />
-        <Route path="/admin" element={<ProtectedRoute allowedRoles={['sysadmin']}><AnimatedPage><AdminPanel /></AnimatedPage></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute allowedRoles={['sysadmin', 'classroom_admin', 'seminar_admin']}><AnimatedPage><AdminPanel /></AnimatedPage></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><AnimatedPage><ProfilePage /></AnimatedPage></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

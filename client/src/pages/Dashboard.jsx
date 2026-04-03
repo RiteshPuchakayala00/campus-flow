@@ -269,11 +269,11 @@ const Dashboard = () => {
                         )}
                     </div>
 
-                    {/* Sysadmin shortcut */}
-                    {user?.role === 'sysadmin' && (
+                    {/* Admin shortcut */}
+                    {isAdmin && (
                         <button onClick={() => navigate('/admin')}
                             className="text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors btn-purple-ghost">
-                            ⚙️ Manage System
+                            ⚙️ {user?.role === 'sysadmin' ? 'Manage System' : 'Manage Branch'}
                         </button>
                     )}
 

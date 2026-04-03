@@ -107,7 +107,7 @@ const AdminPanel = () => {
                 branch: vBranch 
             });
             setVenues(prev => [...prev, res.data]);
-            setVName(''); setVType('classroom'); setVCap(60); setVImageUrl(''); setVBranch('General');
+            setVName(''); setVType('classroom'); setVCap(60); setVImageUrl(''); setVBranch(user?.branch || 'General');
             showToast(`Venue "${res.data.name}" added! ✓`, 'success');
         } catch (err) {
             showToast(err.response?.data?.message || 'Error adding venue', 'error');
@@ -127,7 +127,7 @@ const AdminPanel = () => {
                 branch: uBranch
             });
             setUsers(prev => [...prev, res.data]);
-            setUName(''); setUPass(''); setURole('faculty'); setUBranch('General');
+            setUName(''); setUPass(''); setURole('faculty'); setUBranch(user?.branch || 'General');
             showToast(`User "${res.data.username}" added! ✓`, 'success');
         } catch (err) {
             showToast(err.response?.data?.message || 'Error adding user', 'error');
@@ -136,40 +136,51 @@ const AdminPanel = () => {
         }
     };
 
+    const isSysAdmin = user?.role === 'sysadmin';
+    const filteredUsers = users.filter(u => isSysAdmin || u.branch === user?.branch);
+    const filteredVenues = venues.filter(v => isSysAdmin || v.branch === user?.branch);
+
     const statCards = [
-        { label: 'Total Users', value: users.length, color: '#c084fc' },
-        { label: 'Total Venues', value: venues.length, color: '#60a5fa' },
-        { label: 'Classrooms', value: venues.filter(v => v.type === 'classroom').length, color: '#4ade80' },
-        { label: 'Seminar Halls', value: venues.filter(v => v.type === 'seminar_hall').length, color: '#f87171' },
+        { label: 'Total Users', value: filteredUsers.length, color: '#c084fc' },
+        { label: 'Total Venues', value: filteredVenues.length, color: '#60a5fa' },
     ];
+
+    // Initial branch effect
+    useEffect(() => {
+        if (user?.branch && !isSysAdmin) {
+            setVBranch(user.branch);
+            setUBranch(user.branch);
+        }
+    }, [user, isSysAdmin]);
 
     return (
         <div className="bg-app min-h-screen">
             <Toast toast={toast} onClose={closeToast} />
+            <ConfirmationModal 
+                isOpen={confirmDelete.isOpen} 
+                onConfirm={handleConfirmDelete}
+                onCancel={() => setConfirmDelete(prev => ({ ...prev, isOpen: false }))}
+                title={confirmDelete.title}
+                message={confirmDelete.message}
+            />
+            <ScheduleModal venue={scheduleModalVenue} onClose={() => setScheduleModalVenue(null)} />
 
             {/* Navbar */}
             <nav className="navbar px-6 py-4 flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    <button onClick={() => navigate('/dashboard')} className="text-gray-400 hover:text-red-400 transition-colors">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </button>
-                    <span className="text-xl font-black"
-                        style={{ background: 'linear-gradient(90deg,#c084fc,#1a6ef5)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                        ⚙️ System Admin Panel
+                <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
+                    <span className="text-xl font-black gradient-text">Campus Flow</span>
+                    <span className="text-xs font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 uppercase tracking-widest">
+                        {isSysAdmin ? 'Admin Portal' : `${user?.branch} Management`}
                     </span>
                 </div>
                 <div className="flex items-center gap-3">
+                    <button onClick={() => navigate('/dashboard')} className="btn-glass text-sm font-semibold px-4 py-2 rounded-xl">
+                        ← Back to Dashboard
+                    </button>
                     <button onClick={toggle} className="p-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.05)' }}>
                         {isDark ? '☀️' : '🌙'}
                     </button>
                     <span className="text-sm text-gray-400">{user?.username}</span>
-                    <button onClick={() => { logout(); navigate('/login'); }}
-                        className="text-sm px-3 py-1.5 rounded-lg"
-                        style={{ background: 'rgba(224,32,32,0.15)', color: '#f87171' }}>
-                        Logout
-                    </button>
                 </div>
             </nav>
 
@@ -213,7 +224,7 @@ const AdminPanel = () => {
                         </div>
                         <div className="w-32">
                             <label className="block text-xs text-gray-400 mb-1">Branch</label>
-                            <select value={vBranch} onChange={e => setVBranch(e.target.value)} className="input-dark">
+                            <select value={vBranch} onChange={e => setVBranch(e.target.value)} className="input-dark" disabled={!isSysAdmin}>
                                 <option value="General">General</option>
                                 <option value="CSE">CSE</option>
                                 <option value="ECE">ECE</option>
@@ -235,36 +246,30 @@ const AdminPanel = () => {
                                 <tr>
                                     <th className="text-left pb-3 text-gray-500 font-medium">Name</th>
                                     <th className="text-left pb-3 text-gray-500 font-medium">Type</th>
-                                    <th className="text-left pb-3 text-gray-500 font-medium">Branch</th>
                                     <th className="text-left pb-3 text-gray-500 font-medium">Capacity</th>
+                                    <th className="text-left pb-3 text-gray-500 font-medium">Branch</th>
                                     <th className="text-left pb-3 text-gray-500 font-medium">Action</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-                                {venues.map(v => (
+                                {filteredVenues.map(v => (
                                     <tr key={v._id}>
-                                        <td className="py-3 text-theme font-medium">{v.name}</td>
+                                        <td className="py-3 text-white font-medium">{v.name}</td>
+                                        <td className="py-3 text-gray-400 capitalize">{v.type?.replace('_', ' ')}</td>
+                                        <td className="py-3 text-gray-400">{v.capacity}</td>
                                         <td className="py-3">
-                                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${v.type === 'classroom' ? 'badge-classroom' : 'badge-seminar'}`}>
-                                                {v.type === 'classroom' ? 'Classroom' : 'Seminar Hall'}
-                                            </span>
-                                        </td>
-                                        <td className="py-3">
-                                            <span className="text-xs font-bold text-slate-500 uppercase">
+                                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">
                                                 {v.branch || 'General'}
                                             </span>
                                         </td>
-                                        <td className="py-3 text-gray-300">{v.capacity}</td>
-                                        <td className="py-3">
-                                            <div className="flex gap-2">
+                                        <td className="py-3 text-right">
+                                            <div className="flex justify-end gap-3">
                                                 <button onClick={() => setScheduleModalVenue(v)}
-                                                    className="text-xs px-2 py-1 rounded-lg font-medium"
-                                                    style={{ background: 'rgba(59,130,246,0.15)', color: '#60a5fa' }}>
+                                                    className="text-purple-400 hover:text-purple-300">
                                                     Schedule
                                                 </button>
                                                 <button onClick={() => deleteVenue(v._id, v.name)}
-                                                    className="text-xs px-2 py-1 rounded-lg font-medium"
-                                                    style={{ background: 'rgba(224,32,32,0.15)', color: '#f87171' }}>
+                                                    className="text-red-400 hover:text-red-300">
                                                     Delete
                                                 </button>
                                             </div>
@@ -285,13 +290,18 @@ const AdminPanel = () => {
                             <input value={uName} onChange={e => setUName(e.target.value)}
                                 className="input-dark" placeholder="e.g. faculty_john" required />
                         </div>
-                        <div className="w-40">
+                        <div className="flex-1 min-w-44">
                             <label className="block text-xs text-gray-400 mb-1">Role</label>
                             <select value={uRole} onChange={e => setURole(e.target.value)} className="input-dark">
                                 <option value="faculty">Faculty</option>
                                 <option value="cr">Class Representative</option>
-                                <option value="classroom_admin">Classroom Admin</option>
-                                <option value="seminar_admin">Seminar Admin</option>
+                                <option value="event_organizer">Event Organizer</option>
+                                {isSysAdmin && (
+                                    <>
+                                        <option value="classroom_admin">Classroom Admin</option>
+                                        <option value="seminar_admin">Seminar Admin</option>
+                                    </>
+                                )}
                             </select>
                         </div>
                         <div className="flex-1 min-w-40">
@@ -301,7 +311,7 @@ const AdminPanel = () => {
                         </div>
                         <div className="w-32">
                             <label className="block text-xs text-gray-400 mb-1">Branch</label>
-                            <select value={uBranch} onChange={e => setUBranch(e.target.value)} className="input-dark">
+                            <select value={uBranch} onChange={e => setUBranch(e.target.value)} className="input-dark" disabled={!isSysAdmin}>
                                 <option value="General">General</option>
                                 <option value="CSE">CSE</option>
                                 <option value="ECE">ECE</option>
@@ -316,7 +326,7 @@ const AdminPanel = () => {
 
                 {/* Users Table */}
                 <div className="glass-card p-6 animate-fade-in-up">
-                    <h2 className="text-lg font-bold text-theme mb-4">👥 System Users ({users.length})</h2>
+                    <h2 className="text-lg font-bold text-theme mb-4">👥 System Users ({filteredUsers.length})</h2>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm table-dark">
                             <thead>
@@ -328,33 +338,21 @@ const AdminPanel = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-                                {users.map(u => (
+                                {filteredUsers.map(u => (
                                     <tr key={u._id}>
-                                        <td className="py-3 text-theme font-medium">{u.username}</td>
+                                        <td className="py-3 text-white font-medium">{u.username}</td>
+                                        <td className="py-3 text-gray-400 capitalize">{u.role?.replace('_', ' ')}</td>
                                         <td className="py-3">
-                                            <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                                                style={{
-                                                    background: u.role === 'sysadmin' ? 'rgba(147,51,234,0.2)' : 'rgba(26,110,245,0.2)',
-                                                    color: u.role === 'sysadmin' ? '#c084fc' : '#60a5fa',
-                                                    border: u.role === 'sysadmin' ? '1px solid rgba(147,51,234,0.3)' : '1px solid rgba(26,110,245,0.3)'
-                                                }}>
-                                                {u.role}
-                                            </span>
-                                        </td>
-                                        <td className="py-3">
-                                            <span className="text-xs font-bold text-slate-500 uppercase">
+                                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">
                                                 {u.branch || 'General'}
                                             </span>
                                         </td>
                                         <td className="py-3">
-                                            {u.role !== 'sysadmin' ? (
+                                            {u.username !== user?.username && (
                                                 <button onClick={() => deleteUser(u._id, u.username)}
-                                                    className="text-xs px-2 py-1 rounded-lg"
-                                                    style={{ background: 'rgba(224,32,32,0.15)', color: '#f87171' }}>
+                                                    className="text-red-400 hover:text-red-300 transition-colors">
                                                     Delete
                                                 </button>
-                                            ) : (
-                                                <span className="text-xs text-gray-600">Protected</span>
                                             )}
                                         </td>
                                     </tr>
