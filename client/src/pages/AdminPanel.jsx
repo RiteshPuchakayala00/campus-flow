@@ -13,6 +13,7 @@ const AdminPanel = () => {
     const navigate = useNavigate();
     const { toast, showToast, closeToast } = useToast();
 
+    const [users, setUsers] = useState([]);
     const [venues, setVenues] = useState([]);
 
     // Safety Confirmation State

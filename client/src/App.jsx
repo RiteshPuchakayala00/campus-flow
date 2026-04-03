@@ -9,7 +9,6 @@ import BookVenue from './pages/BookVenue';
 import AdminPanel from './pages/AdminPanel';
 import ProfilePage from './pages/ProfilePage';
 import LandingPage from './pages/LandingPage';
-import AIAssistant from './components/AIAssistant';
 import Toast from './components/Toast';
 
 // ProtectedRoute: blocks access to pages that require login
@@ -70,7 +69,6 @@ function App() {
       <AuthProvider>
         <Router>
           <AnimatedRoutes />
-          <AIAssistant />
           <Toast /> {/* Render react-hot-toast Toaster globally */}
         </Router>
       </AuthProvider>
