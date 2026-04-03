@@ -60,7 +60,7 @@ exports.createBooking = async (req, res) => {
 
         // 4. Create Booking
         const newBooking = new Booking({
-            user_id: req.user.id,
+            user: req.user.id,
             venue_id,
             date,
             start_time,
@@ -101,10 +101,10 @@ exports.getBookings = async (req, res) => {
 
         // Admins see all bookings
         if (['classroom_admin', 'seminar_admin', 'sysadmin'].includes(req.user.role)) {
-            bookings = await Booking.find().populate('user_id', ['username', 'role']).populate('venue_id', ['name', 'type']);
+            bookings = await Booking.find().populate('user', ['username', 'role']).populate('venue_id', ['name', 'type']);
         } else {
             // Regular users only see their own bookings
-            bookings = await Booking.find({ user_id: req.user.id }).populate('venue_id', ['name', 'type']);
+            bookings = await Booking.find({ user: req.user.id }).populate('venue_id', ['name', 'type']);
         }
 
         res.json(bookings);
@@ -155,7 +155,7 @@ exports.updateBookingStatus = async (req, res) => {
             : `Your request for ${venueName} on ${formattedDate} was rejected. Reason: ${rejection_reason}`;
 
         const newNotification = new Notification({
-            user: booking.user_id,
+            user: booking.user,
             title: `Booking ${status === 'approved' ? 'Approved ✅' : 'Rejected ❌'}`,
             message: notifMessage,
             type: status === 'approved' ? 'success' : 'error'
@@ -177,7 +177,7 @@ exports.getApprovedBookings = async (req, res) => {
         const bookings = await Booking.find({ status: 'approved' }).populate('venue_id', ['name', 'type']);
         res.json(bookings);
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
+        console.error('SERVER ERROR:', err);
+        res.status(500).json({ message: 'Server error: ' + err.message });
     }
 };
