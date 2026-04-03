@@ -6,6 +6,7 @@ import api from '../api/axios';
 import Toast, { useToast } from '../components/Toast';
 import CalendarView from '../components/CalendarView';
 import AnalyticsChart from '../components/AnalyticsChart';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 /* ── Status badge ── */
 const StatusBadge = ({ status }) => {
@@ -39,6 +40,7 @@ const Dashboard = () => {
 
     const [viewMode, setViewMode] = useState('list'); // 'list' or 'calendar'
     const [editingBooking, setEditingBooking] = useState(null);
+    const [confirmCancel, setConfirmCancel] = useState({ isOpen: false, id: null });
 
     const notifRef = useRef(null);
 
@@ -105,8 +107,13 @@ const Dashboard = () => {
     };
 
     // Cancel booking
-    const handleCancel = async (id) => {
-        if (!window.confirm('Cancel this booking request?')) return;
+    const handleCancel = (id) => {
+        setConfirmCancel({ isOpen: true, id });
+    };
+
+    const handleConfirmCancel = async () => {
+        const { id } = confirmCancel;
+        setConfirmCancel({ isOpen: false, id: null });
         try {
             await api.patch(`/bookings/${id}/cancel`);
             setBookings(prev => prev.map(b => b._id === id ? { ...b, status: 'cancelled' } : b));
@@ -606,6 +613,16 @@ const Dashboard = () => {
                     </div>
                 </div>
             )}
+
+            <ConfirmationModal 
+                isOpen={confirmCancel.isOpen}
+                title="Cancel Booking?"
+                message="Are you sure you want to cancel this booking request? This will release the venue for others."
+                onConfirm={handleConfirmCancel}
+                onCancel={() => setConfirmCancel({ isOpen: false, id: null })}
+                confirmText="Yes, Cancel"
+                type="warning"
+            />
         </div>
     );
 };

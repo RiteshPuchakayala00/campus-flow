@@ -4,6 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import api from '../api/axios';
 import Toast, { useToast } from '../components/Toast';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 const AdminPanel = () => {
     const { user, logout } = useContext(AuthContext);
@@ -11,8 +12,16 @@ const AdminPanel = () => {
     const navigate = useNavigate();
     const { toast, showToast, closeToast } = useToast();
 
-    const [users, setUsers] = useState([]);
     const [venues, setVenues] = useState([]);
+
+    // Safety Confirmation State
+    const [confirmDelete, setConfirmDelete] = useState({
+        isOpen: false,
+        type: null, // 'user' or 'venue'
+        id: null,
+        title: '',
+        message: ''
+    });
 
     // Add venue form
     const [vName, setVName] = useState('');
@@ -40,25 +49,42 @@ const AdminPanel = () => {
         load();
     }, []);
 
-    const deleteUser = async (id) => {
-        if (!window.confirm('Delete this user?')) return;
-        try {
-            await api.delete(`/admin/users/${id}`);
-            setUsers(prev => prev.filter(u => u._id !== id));
-            showToast('User deleted', 'info');
-        } catch (err) {
-            showToast(err.response?.data?.message || 'Error deleting user', 'error');
-        }
+    const deleteUser = (id, name) => {
+        setConfirmDelete({
+            isOpen: true,
+            type: 'user',
+            id: id,
+            title: 'Delete User?',
+            message: `Are you sure you want to permanently delete user "${name}"? This action cannot be undone.`
+        });
     };
 
-    const deleteVenue = async (id) => {
-        if (!window.confirm('Delete this venue?')) return;
+    const deleteVenue = (id, name) => {
+        setConfirmDelete({
+            isOpen: true,
+            type: 'venue',
+            id: id,
+            title: 'Delete Venue?',
+            message: `Are you sure you want to permanently delete venue "${name}"? This will remove all associated data.`
+        });
+    };
+
+    const handleConfirmDelete = async () => {
+        const { type, id } = confirmDelete;
+        setConfirmDelete(prev => ({ ...prev, isOpen: false }));
+        
         try {
-            await api.delete(`/admin/venues/${id}`);
-            setVenues(prev => prev.filter(v => v._id !== id));
-            showToast('Venue deleted', 'info');
+            if (type === 'user') {
+                await api.delete(`/admin/users/${id}`);
+                setUsers(prev => prev.filter(u => u._id !== id));
+                showToast('User deleted', 'info');
+            } else {
+                await api.delete(`/admin/venues/${id}`);
+                setVenues(prev => prev.filter(v => v._id !== id));
+                showToast('Venue deleted', 'info');
+            }
         } catch (err) {
-            showToast(err.response?.data?.message || 'Error deleting venue', 'error');
+            showToast(err.response?.data?.message || `Error deleting ${type}`, 'error');
         }
     };
 
@@ -197,7 +223,7 @@ const AdminPanel = () => {
                                         </td>
                                         <td className="py-3 text-gray-300">{v.capacity}</td>
                                         <td className="py-3">
-                                            <button onClick={() => deleteVenue(v._id)}
+                                            <button onClick={() => deleteVenue(v._id, v.name)}
                                                 className="text-xs px-2 py-1 rounded-lg"
                                                 style={{ background: 'rgba(224,32,32,0.15)', color: '#f87171' }}>
                                                 Delete
@@ -267,7 +293,7 @@ const AdminPanel = () => {
                                         </td>
                                         <td className="py-3">
                                             {u.role !== 'sysadmin' ? (
-                                                <button onClick={() => deleteUser(u._id)}
+                                                <button onClick={() => deleteUser(u._id, u.username)}
                                                     className="text-xs px-2 py-1 rounded-lg"
                                                     style={{ background: 'rgba(224,32,32,0.15)', color: '#f87171' }}>
                                                     Delete
@@ -282,6 +308,15 @@ const AdminPanel = () => {
                         </table>
                     </div>
                 </div>
+
+                <ConfirmationModal 
+                    isOpen={confirmDelete.isOpen}
+                    title={confirmDelete.title}
+                    message={confirmDelete.message}
+                    onConfirm={handleConfirmDelete}
+                    onCancel={() => setConfirmDelete(prev => ({ ...prev, isOpen: false }))}
+                    confirmText="Delete Permanently"
+                />
 
             </main>
         </div>
