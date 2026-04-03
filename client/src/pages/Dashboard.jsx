@@ -310,7 +310,7 @@ const Dashboard = () => {
                                         <tbody className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
                                             {pendingBookings.map(b => (
                                                 <tr key={b._id}>
-                                                    <td className="py-3 text-white font-medium">{b.user?.username || b.user}</td>
+                                                    <td className="py-3 text-white font-medium">{(b.user?.username || b.user_id?.username) || (b.user || b.user_id || 'Unknown')}</td>
                                                     <td className="py-3 text-gray-300">{b.venue?.name || b.venue}</td>
                                                     <td className="py-3 text-gray-300">{new Date(b.date).toLocaleDateString()}</td>
                                                     <td className="py-3 text-gray-400">{b.purpose?.slice(0, 30)}</td>
@@ -359,7 +359,7 @@ const Dashboard = () => {
                                     <tbody className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
                                         {bookings.map(b => (
                                             <tr key={b._id}>
-                                                <td className="py-3 text-white font-medium">{b.user?.username || b.user}</td>
+                                                <td className="py-3 text-white font-medium">{(b.user?.username || b.user_id?.username) || (b.user || b.user_id || 'Unknown')}</td>
                                                 <td className="py-3 text-gray-300">{b.venue?.name || b.venue}</td>
                                                 <td className="py-3 text-gray-300">{new Date(b.date).toLocaleDateString()}</td>
                                                 <td className="py-3 text-gray-400">

@@ -101,10 +101,15 @@ exports.getBookings = async (req, res) => {
 
         // Admins see all bookings
         if (['classroom_admin', 'seminar_admin', 'sysadmin'].includes(req.user.role)) {
-            bookings = await Booking.find().populate('user', ['username', 'role']).populate('venue_id', ['name', 'type']);
+            bookings = await Booking.find()
+                .populate('user', ['username', 'role'])
+                .populate('user_id', ['username', 'role']) // Backward compat for old bookings
+                .populate('venue_id', ['name', 'type']);
         } else {
             // Regular users only see their own bookings
-            bookings = await Booking.find({ user: req.user.id }).populate('venue_id', ['name', 'type']);
+            bookings = await Booking.find({
+                $or: [{ user: req.user.id }, { user_id: req.user.id }]
+            }).populate('venue_id', ['name', 'type']);
         }
 
         res.json(bookings);
@@ -150,12 +155,17 @@ exports.updateBookingStatus = async (req, res) => {
         const venueName = booking.venue_id ? booking.venue_id.name : 'a venue';
         const formattedDate = new Date(booking.date).toLocaleDateString();
 
+        // Fallbacks for backward compatibility
+        const startTime = booking.start_time || booking.startTime || 'TBD';
+        const endTime = booking.end_time || booking.endTime || 'TBD';
+        const targetUserId = booking.user || booking.user_id;
+
         const notifMessage = status === 'approved'
-            ? `Your request for ${venueName} on ${formattedDate} from ${booking.start_time} to ${booking.end_time} was approved.`
+            ? `Your request for ${venueName} on ${formattedDate} from ${startTime} to ${endTime} was approved.`
             : `Your request for ${venueName} on ${formattedDate} was rejected. Reason: ${rejection_reason}`;
 
         const newNotification = new Notification({
-            user: booking.user,
+            user: targetUserId,
             title: `Booking ${status === 'approved' ? 'Approved ✅' : 'Rejected ❌'}`,
             message: notifMessage,
             type: status === 'approved' ? 'success' : 'error'
