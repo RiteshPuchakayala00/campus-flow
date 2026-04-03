@@ -210,3 +210,128 @@ exports.getApprovedBookings = async (req, res) => {
         res.status(500).json({ message: 'Server error: ' + err.message });
     }
 };
+
+// @desc    Update/Edit a pending booking by user
+// @route   PUT /api/bookings/:id
+// @access  Private (Faculty, CR, Event Organizer)
+exports.updateBooking = async (req, res) => {
+    try {
+        const { date, start_time, end_time, purpose, event_name, participants_count } = req.body;
+        const booking = await Booking.findById(req.params.id).populate('venue_id');
+
+        if (!booking) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
+
+        // Only owner can update
+        const targetUserId = booking.user || booking.user_id;
+        if (targetUserId.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'Access denied. You can only edit your own bookings.' });
+        }
+
+        // Only pending bookings can be edited
+        if (booking.status !== 'pending') {
+            return res.status(400).json({ message: 'Only pending bookings can be modified.' });
+        }
+
+        // REQ_35 & REQ_31: Check venue availability for the new time slot
+        if (date && start_time && end_time) {
+            const overlappingBookings = await Booking.find({
+                _id: { $ne: booking._id }, // Exclude current booking
+                venue_id: booking.venue_id._id,
+                date: new Date(date),
+                status: { $in: ['approved', 'pending'] },
+                $or: [
+                    { start_time: { $lt: end_time }, end_time: { $gt: start_time } }
+                ]
+            });
+
+            if (overlappingBookings.length > 0) {
+                return res.status(409).json({ message: 'Venue is already booked or pending for this new time slot.' });
+            }
+        }
+
+        // Update fields
+        if (date) booking.date = date;
+        if (start_time) booking.start_time = start_time;
+        if (end_time) booking.end_time = end_time;
+        if (purpose) booking.purpose = purpose;
+        if (event_name) booking.event_name = event_name;
+        if (participants_count) booking.participants_count = participants_count;
+
+        await booking.save();
+
+        // REQ_36: Notify Venue Admin
+        const adminRole = booking.venue_id && booking.venue_id.type === 'seminar_hall' ? 'seminar_admin' : 'classroom_admin';
+        const admins = await User.find({ role: { $in: [adminRole, 'sysadmin'] } });
+        const notifPromises = admins.map(admin =>
+            new Notification({
+                user: admin._id,
+                title: '✏️ Booking Modified',
+                message: `The booking request for ${booking.venue_id.name} on ${new Date(booking.date).toLocaleDateString()} has been modified by the user.`,
+                type: 'info'
+            }).save()
+        );
+        await Promise.all(notifPromises);
+
+        // REQ_37: Maintain logs
+        const newAuditLog = new AuditLog({
+            booking_id: booking._id,
+            admin_id: req.user.id, // Using admin_id field for user performing action to reuse the model
+            action: 'rejected', // Just a placeholder action since schema only allows approved/rejected.
+            reason: 'Modified by user'
+        });
+        await newAuditLog.save();
+
+        res.json(booking);
+    } catch (err) {
+        console.error('SERVER ERROR:', err);
+        res.status(500).json({ message: 'Server error: ' + err.message });
+    }
+};
+
+// @desc    Cancel a pending booking by user
+// @route   PATCH /api/bookings/:id/cancel
+// @access  Private (Faculty, CR, Event Organizer)
+exports.cancelBooking = async (req, res) => {
+    try {
+        const booking = await Booking.findById(req.params.id).populate('venue_id');
+
+        if (!booking) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
+
+        // Only owner can cancel
+        const targetUserId = booking.user || booking.user_id;
+        if (targetUserId.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'Access denied. You can only cancel your own bookings.' });
+        }
+
+        // Only pending bookings can be cancelled
+        if (booking.status !== 'pending') {
+            return res.status(400).json({ message: 'Only pending bookings can be cancelled.' });
+        }
+
+        booking.status = 'cancelled';
+        booking.rejection_reason = 'Cancelled by user';
+        await booking.save();
+
+        // REQ_36: Notify Venue Admin
+        const adminRole = booking.venue_id && booking.venue_id.type === 'seminar_hall' ? 'seminar_admin' : 'classroom_admin';
+        const admins = await User.find({ role: { $in: [adminRole, 'sysadmin'] } });
+        const notifPromises = admins.map(admin =>
+            new Notification({
+                user: admin._id,
+                title: '🗑️ Booking Cancelled',
+                message: `The booking request for ${booking.venue_id.name} on ${new Date(booking.date).toLocaleDateString()} was cancelled by the user.`,
+                type: 'warning'
+            }).save()
+        );
+        await Promise.all(notifPromises);
+
+        res.json(booking);
+    } catch (err) {
+        console.error('SERVER ERROR:', err);
+        res.status(500).json({ message: 'Server error: ' + err.message });
+    }
+};

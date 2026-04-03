@@ -38,6 +38,7 @@ const Dashboard = () => {
     const [busy, setBusy] = useState(true);
 
     const [viewMode, setViewMode] = useState('list'); // 'list' or 'calendar'
+    const [editingBooking, setEditingBooking] = useState(null);
 
     const notifRef = useRef(null);
 
@@ -112,6 +113,19 @@ const Dashboard = () => {
             showToast('Booking cancelled', 'info');
         } catch (err) {
             showToast(err.response?.data?.message || 'Cannot cancel', 'error');
+        }
+    };
+
+    const handleEditSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await api.put(`/bookings/${editingBooking._id}`, editingBooking);
+            // Replace the updated booking in state
+            setBookings(prev => prev.map(b => b._id === editingBooking._id ? res.data : b));
+            setEditingBooking(null);
+            showToast('Booking updated successfully! ✓', 'success');
+        } catch (err) {
+            showToast(err.response?.data?.message || 'Failed to update booking', 'error');
         }
     };
 
@@ -496,27 +510,34 @@ const Dashboard = () => {
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-                                                {bookings.map(b => (
+                                                {myBookings.map(b => (
                                                     <tr key={b._id}>
                                                         <td className="py-3 text-white font-medium">{b.venue?.name || b.venue}</td>
                                                         <td className="py-3 text-gray-300 text-xs">
                                                             {new Date(b.date).toLocaleDateString()}<br />
-                                                            <span className="text-gray-500">{b.startTime} – {b.endTime}</span>
+                                                            <span className="text-gray-500">{b.start_time || b.startTime} – {b.end_time || b.endTime}</span>
                                                         </td>
                                                         <td className="py-3 text-gray-400">{b.purpose?.slice(0, 30)}</td>
                                                         <td className="py-3"><StatusBadge status={b.status} /></td>
                                                         <td className="py-3">
                                                             {b.status === 'pending' && (
-                                                                <button onClick={() => handleCancel(b._id)}
-                                                                    className="text-xs px-2 py-1 rounded-lg font-medium"
-                                                                    style={{ background: 'rgba(224,32,32,0.15)', color: '#f87171' }}>
-                                                                    Cancel
-                                                                </button>
+                                                                <div className="flex gap-2">
+                                                                    <button onClick={() => setEditingBooking(b)}
+                                                                        className="text-xs px-2 py-1 rounded-lg font-medium"
+                                                                        style={{ background: 'rgba(59,130,246,0.15)', color: '#60a5fa' }}>
+                                                                        Edit
+                                                                    </button>
+                                                                    <button onClick={() => handleCancel(b._id)}
+                                                                        className="text-xs px-2 py-1 rounded-lg font-medium"
+                                                                        style={{ background: 'rgba(224,32,32,0.15)', color: '#f87171' }}>
+                                                                        Cancel
+                                                                    </button>
+                                                                </div>
                                                             )}
                                                         </td>
                                                     </tr>
                                                 ))}
-                                                {bookings.length === 0 && (
+                                                {myBookings.length === 0 && (
                                                     <tr><td colSpan={5} className="py-6 text-center text-gray-500">No requests yet.</td></tr>
                                                 )}
                                             </tbody>
@@ -528,6 +549,63 @@ const Dashboard = () => {
                     </>
                 )}
             </main>
+
+            {/* Edit Booking Modal */}
+            {editingBooking && (
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+                    <div className="glass-card p-6 w-full max-w-md animate-fade-in-up">
+                        <h2 className="text-xl font-bold text-white mb-4">✏️ Edit Booking</h2>
+                        <form onSubmit={handleEditSubmit} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Date</label>
+                                <input type="date" value={editingBooking.date ? new Date(editingBooking.date).toISOString().split('T')[0] : ''}
+                                    onChange={e => setEditingBooking({ ...editingBooking, date: e.target.value })}
+                                    className="input-dark" required />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1">Start Time</label>
+                                    <input type="time" value={editingBooking.start_time || editingBooking.startTime || ''}
+                                        onChange={e => setEditingBooking({ ...editingBooking, start_time: e.target.value })}
+                                        className="input-dark" required />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1">End Time</label>
+                                    <input type="time" value={editingBooking.end_time || editingBooking.endTime || ''}
+                                        onChange={e => setEditingBooking({ ...editingBooking, end_time: e.target.value })}
+                                        className="input-dark" required />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Purpose</label>
+                                <textarea value={editingBooking.purpose || ''}
+                                    onChange={e => setEditingBooking({ ...editingBooking, purpose: e.target.value })}
+                                    rows={2} className="input-dark resize-none" required />
+                            </div>
+                            {editingBooking.venue_id?.type === 'seminar_hall' || editingBooking.venue?.type === 'seminar_hall' ? (
+                                <div className="grid grid-cols-2 gap-4 mt-2">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-300 mb-1">Event Name</label>
+                                        <input type="text" value={editingBooking.event_name || ''}
+                                            onChange={e => setEditingBooking({ ...editingBooking, event_name: e.target.value })}
+                                            className="input-dark" required />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-300 mb-1">Participants</label>
+                                        <input type="number" value={editingBooking.participants_count || ''}
+                                            onChange={e => setEditingBooking({ ...editingBooking, participants_count: e.target.value })}
+                                            className="input-dark" required />
+                                    </div>
+                                </div>
+                            ) : null}
+                            <div className="flex gap-3 mt-6">
+                                <button type="submit" className="btn-primary flex-1">Save Changes</button>
+                                <button type="button" onClick={() => setEditingBooking(null)} className="btn-glass flex-1 font-medium text-sm rounded-lg">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
