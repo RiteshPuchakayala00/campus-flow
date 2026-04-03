@@ -21,6 +21,12 @@ const AdminPanel = () => {
     const [vImageUrl, setVImageUrl] = useState('');
     const [vLoading, setVLoading] = useState(false);
 
+    // Add user form
+    const [uName, setUName] = useState('');
+    const [uPass, setUPass] = useState('');
+    const [uRole, setURole] = useState('faculty');
+    const [uLoading, setULoading] = useState(false);
+
     useEffect(() => {
         const load = async () => {
             try {
@@ -68,6 +74,21 @@ const AdminPanel = () => {
             showToast(err.response?.data?.message || 'Error adding venue', 'error');
         } finally {
             setVLoading(false);
+        }
+    };
+
+    const addUser = async (e) => {
+        e.preventDefault();
+        setULoading(true);
+        try {
+            const res = await api.post('/admin/users', { username: uName, password: uPass, role: uRole });
+            setUsers(prev => [...prev, res.data]);
+            setUName(''); setUPass(''); setURole('faculty');
+            showToast(`User "${res.data.username}" added! ✓`, 'success');
+        } catch (err) {
+            showToast(err.response?.data?.message || 'Error adding user', 'error');
+        } finally {
+            setULoading(false);
         }
     };
 
@@ -187,6 +208,35 @@ const AdminPanel = () => {
                             </tbody>
                         </table>
                     </div>
+                </div>
+
+                {/* Add User Form */}
+                <div className="glass-card p-6 mb-8 animate-fade-in-up">
+                    <h2 className="text-lg font-bold text-theme mb-5">➕ Add New User</h2>
+                    <form onSubmit={addUser} className="flex flex-wrap gap-3 items-end">
+                        <div className="flex-1 min-w-40">
+                            <label className="block text-xs text-gray-400 mb-1">Username</label>
+                            <input value={uName} onChange={e => setUName(e.target.value)}
+                                className="input-dark" placeholder="e.g. faculty_john" required />
+                        </div>
+                        <div className="w-40">
+                            <label className="block text-xs text-gray-400 mb-1">Role</label>
+                            <select value={uRole} onChange={e => setURole(e.target.value)} className="input-dark">
+                                <option value="faculty">Faculty</option>
+                                <option value="cr">Class Representative</option>
+                                <option value="classroom_admin">Classroom Admin</option>
+                                <option value="seminar_admin">Seminar Admin</option>
+                            </select>
+                        </div>
+                        <div className="flex-1 min-w-40">
+                            <label className="block text-xs text-gray-400 mb-1">Password</label>
+                            <input type="password" value={uPass} onChange={e => setUPass(e.target.value)}
+                                className="input-dark" placeholder="password123" required minLength="6" />
+                        </div>
+                        <button type="submit" disabled={uLoading} className="btn-primary whitespace-nowrap">
+                            {uLoading ? '⏳ Adding...' : '➕ Add User'}
+                        </button>
+                    </form>
                 </div>
 
                 {/* Users Table */}
