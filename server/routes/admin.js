@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const User = require('../models/User');
 const Venue = require('../models/Venue');
+const bcrypt = require('bcryptjs');
 
 // Middleware: sysadmin only
 const sysadminOnly = (req, res, next) => {
@@ -17,6 +18,32 @@ router.get('/users', auth, sysadminOnly, async (req, res) => {
     try {
         const users = await User.find().select('-password'); // don't return passwords
         res.json(users);
+    } catch (err) {
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// POST /api/admin/users  – add a user
+router.post('/users', auth, sysadminOnly, async (req, res) => {
+    try {
+        const { username, password, role } = req.body;
+        let user = await User.findOne({ username });
+        if (user) {
+            return res.status(400).json({ message: 'User already exists' });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        user = new User({
+            username,
+            password: hashedPassword,
+            role
+        });
+        await user.save();
+
+        const userWithoutPassword = await User.findById(user._id).select('-password');
+        res.status(201).json(userWithoutPassword);
     } catch (err) {
         res.status(500).json({ message: 'Server error' });
     }
