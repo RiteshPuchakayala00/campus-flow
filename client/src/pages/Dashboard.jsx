@@ -63,8 +63,11 @@ const Dashboard = () => {
     const [filterBranch, setFilterBranch] = useState('all');
     const [filterCap, setFilterCap] = useState('');
 
-    const isAdmin = ['classroom_admin', 'seminar_admin', 'sysadmin'].includes(user?.role);
-    const isUser = ['faculty', 'cr', 'event_organizer'].includes(user?.role);
+    // Admin if role is one of the admin variants
+    const isAdmin = ['classroom_admin', 'seminar_admin', 'sysadmin'].includes(user?.role?.toLowerCase());
+    
+    // Users can book rooms. We now allow Admins to also act as users so they can book their own rooms.
+    const isUser = ['faculty', 'cr', 'event_organizer', 'classroom_admin', 'seminar_admin', 'sysadmin'].includes(user?.role?.toLowerCase());
 
     useEffect(() => {
         const load = async () => {
@@ -415,7 +418,11 @@ const Dashboard = () => {
 
                 {/* ── FACULTY/USER VIEW ── */}
                 {isUser && (
-                    <>
+                    <div className={isAdmin ? 'mt-12 pt-8 border-t border-theme' : ''}>
+                        {isAdmin && <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                             <span className="w-2 h-8 bg-blue-500 rounded-full"></span>
+                             Personal Booking Workspace
+                        </h2>}
                         {/* View Tabs */}
                         <div className="flex gap-4 mb-6 border-b border-gray-800 pb-2">
                             <button onClick={() => setViewMode('list')}
