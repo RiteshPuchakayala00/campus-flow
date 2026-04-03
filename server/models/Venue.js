@@ -12,6 +12,11 @@ const venueSchema = new mongoose.Schema({
         enum: ['classroom', 'seminar_hall'],
         required: true
     },
+    branch: {
+        type: String,
+        enum: ['CSE', 'ECE', 'AIDS', 'General'],
+        default: 'General'
+    },
     capacity: {
         type: Number,
         required: true

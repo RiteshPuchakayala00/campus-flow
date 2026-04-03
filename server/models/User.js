@@ -15,6 +15,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['faculty', 'cr', 'event_organizer', 'classroom_admin', 'seminar_admin', 'sysadmin'],
         required: true
+    },
+    branch: {
+        type: String,
+        enum: ['CSE', 'ECE', 'AIDS', 'General', 'Global'],
+        default: 'General'
     }
 }, { timestamps: true });
 

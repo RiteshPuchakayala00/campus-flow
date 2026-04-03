@@ -12,8 +12,9 @@ export const AuthProvider = ({ children }) => {
         const token = localStorage.getItem('token') || sessionStorage.getItem('token');
         const role = localStorage.getItem('role') || sessionStorage.getItem('role');
         const username = localStorage.getItem('username') || sessionStorage.getItem('username');
+        const branch = localStorage.getItem('branch') || sessionStorage.getItem('branch');
         if (token && role && username) {
-            setUser({ token, role, username });
+            setUser({ token, role, username, branch });
             api.defaults.headers.common['x-auth-token'] = token;
         }
         setLoading(false);
@@ -23,24 +24,27 @@ export const AuthProvider = ({ children }) => {
     // rememberMe=false → sessionStorage (cleared when browser tab closes)
     const login = async (username, password, rememberMe = true) => {
         const res = await api.post('/auth/login', { username, password });
-        const { token, role } = res.data;
+        const { token, role, branch } = res.data;
 
         const storage = rememberMe ? localStorage : sessionStorage;
         storage.setItem('token', token);
         storage.setItem('role', role);
         storage.setItem('username', username);
+        storage.setItem('branch', branch || 'General');
 
         api.defaults.headers.common['x-auth-token'] = token;
-        setUser({ token, role, username });
+        setUser({ token, role, username, branch: branch || 'General' });
     };
 
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
         localStorage.removeItem('username');
+        localStorage.removeItem('branch');
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('role');
         sessionStorage.removeItem('username');
+        sessionStorage.removeItem('branch');
         delete api.defaults.headers.common['x-auth-token'];
         setUser(null);
     };

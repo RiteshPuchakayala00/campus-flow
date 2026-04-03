@@ -96,7 +96,15 @@ exports.createBooking = async (req, res) => {
         // REQ_05: Notify the relevant admin about the new booking request
         const venueDoc = await Venue.findById(venue_id);
         const adminRole = venueDoc && venueDoc.type === 'seminar_hall' ? 'seminar_admin' : 'classroom_admin';
-        const admins = await User.find({ role: { $in: [adminRole, 'sysadmin'] } });
+        
+        // BRANCH MOD: Only notify admins of the SAME branch or SysAdmins
+        const admins = await User.find({ 
+            $or: [
+                { role: 'sysadmin' }, 
+                { role: adminRole, branch: venueDoc.branch }
+            ] 
+        });
+        
         const notifPromises = admins.map(admin =>
             new Notification({
                 user: admin._id,
@@ -121,17 +129,28 @@ exports.getBookings = async (req, res) => {
     try {
         let bookings;
 
-        // Admins see all bookings
+        // Admins see bookings
         if (['classroom_admin', 'seminar_admin', 'sysadmin'].includes(req.user.role)) {
-            bookings = await Booking.find()
-                .populate('user', ['username', 'role'])
-                .populate('user_id', ['username', 'role']) // Backward compat for old bookings
-                .populate('venue_id', ['name', 'type']);
+            // Find bookings where venue belongs to admin's branch (unless sysadmin)
+            const query = {};
+            
+            // BRANCH MOD: Restrict by branch if not sysadmin
+            if (req.user.role !== 'sysadmin') {
+                // Find all venues in this admin's branch
+                const myBranchVenues = await Venue.find({ branch: req.user.branch }).select('_id');
+                const venueIds = myBranchVenues.map(v => v._id);
+                query.venue_id = { $in: venueIds };
+            }
+
+            bookings = await Booking.find(query)
+                .populate('user', ['username', 'role', 'branch'])
+                .populate('user_id', ['username', 'role', 'branch'])
+                .populate('venue_id', ['name', 'type', 'branch']);
         } else {
             // Regular users only see their own bookings
             bookings = await Booking.find({
                 $or: [{ user: req.user.id }, { user_id: req.user.id }]
-            }).populate('venue_id', ['name', 'type']);
+            }).populate('venue_id', ['name', 'type', 'branch']);
         }
 
         res.json(bookings);

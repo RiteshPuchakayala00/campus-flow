@@ -30,6 +30,7 @@ const AdminPanel = () => {
     const [vType, setVType] = useState('classroom');
     const [vCap, setVCap] = useState(60);
     const [vImageUrl, setVImageUrl] = useState('');
+    const [vBranch, setVBranch] = useState('General');
     const [vLoading, setVLoading] = useState(false);
 
     // Master schedule modal
@@ -39,6 +40,7 @@ const AdminPanel = () => {
     const [uName, setUName] = useState('');
     const [uPass, setUPass] = useState('');
     const [uRole, setURole] = useState('faculty');
+    const [uBranch, setUBranch] = useState('General');
     const [uLoading, setULoading] = useState(false);
 
     useEffect(() => {
@@ -97,9 +99,15 @@ const AdminPanel = () => {
         e.preventDefault();
         setVLoading(true);
         try {
-            const res = await api.post('/admin/venues', { name: vName, type: vType, capacity: Number(vCap), imageUrl: vImageUrl });
+            const res = await api.post('/admin/venues', { 
+                name: vName, 
+                type: vType, 
+                capacity: Number(vCap), 
+                imageUrl: vImageUrl, 
+                branch: vBranch 
+            });
             setVenues(prev => [...prev, res.data]);
-            setVName(''); setVType('classroom'); setVCap(60); setVImageUrl('');
+            setVName(''); setVType('classroom'); setVCap(60); setVImageUrl(''); setVBranch('General');
             showToast(`Venue "${res.data.name}" added! ✓`, 'success');
         } catch (err) {
             showToast(err.response?.data?.message || 'Error adding venue', 'error');
@@ -112,9 +120,14 @@ const AdminPanel = () => {
         e.preventDefault();
         setULoading(true);
         try {
-            const res = await api.post('/admin/users', { username: uName, password: uPass, role: uRole });
+            const res = await api.post('/admin/users', { 
+                username: uName, 
+                password: uPass, 
+                role: uRole,
+                branch: uBranch
+            });
             setUsers(prev => [...prev, res.data]);
-            setUName(''); setUPass(''); setURole('faculty');
+            setUName(''); setUPass(''); setURole('faculty'); setUBranch('General');
             showToast(`User "${res.data.username}" added! ✓`, 'success');
         } catch (err) {
             showToast(err.response?.data?.message || 'Error adding user', 'error');
@@ -198,6 +211,15 @@ const AdminPanel = () => {
                             <input value={vImageUrl} onChange={e => setVImageUrl(e.target.value)}
                                 className="input-dark" placeholder="https://..." />
                         </div>
+                        <div className="w-32">
+                            <label className="block text-xs text-gray-400 mb-1">Branch</label>
+                            <select value={vBranch} onChange={e => setVBranch(e.target.value)} className="input-dark">
+                                <option value="General">General</option>
+                                <option value="CSE">CSE</option>
+                                <option value="ECE">ECE</option>
+                                <option value="AIDS">AIDS</option>
+                            </select>
+                        </div>
                         <button type="submit" disabled={vLoading} className="btn-primary whitespace-nowrap">
                             {vLoading ? '⏳ Adding...' : '➕ Add Venue'}
                         </button>
@@ -213,6 +235,7 @@ const AdminPanel = () => {
                                 <tr>
                                     <th className="text-left pb-3 text-gray-500 font-medium">Name</th>
                                     <th className="text-left pb-3 text-gray-500 font-medium">Type</th>
+                                    <th className="text-left pb-3 text-gray-500 font-medium">Branch</th>
                                     <th className="text-left pb-3 text-gray-500 font-medium">Capacity</th>
                                     <th className="text-left pb-3 text-gray-500 font-medium">Action</th>
                                 </tr>
@@ -224,6 +247,11 @@ const AdminPanel = () => {
                                         <td className="py-3">
                                             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${v.type === 'classroom' ? 'badge-classroom' : 'badge-seminar'}`}>
                                                 {v.type === 'classroom' ? 'Classroom' : 'Seminar Hall'}
+                                            </span>
+                                        </td>
+                                        <td className="py-3">
+                                            <span className="text-xs font-bold text-slate-500 uppercase">
+                                                {v.branch || 'General'}
                                             </span>
                                         </td>
                                         <td className="py-3 text-gray-300">{v.capacity}</td>
@@ -271,6 +299,15 @@ const AdminPanel = () => {
                             <input type="password" value={uPass} onChange={e => setUPass(e.target.value)}
                                 className="input-dark" placeholder="password123" required minLength="6" />
                         </div>
+                        <div className="w-32">
+                            <label className="block text-xs text-gray-400 mb-1">Branch</label>
+                            <select value={uBranch} onChange={e => setUBranch(e.target.value)} className="input-dark">
+                                <option value="General">General</option>
+                                <option value="CSE">CSE</option>
+                                <option value="ECE">ECE</option>
+                                <option value="AIDS">AIDS</option>
+                            </select>
+                        </div>
                         <button type="submit" disabled={uLoading} className="btn-primary whitespace-nowrap">
                             {uLoading ? '⏳ Adding...' : '➕ Add User'}
                         </button>
@@ -286,6 +323,7 @@ const AdminPanel = () => {
                                 <tr>
                                     <th className="text-left pb-3 text-gray-500 font-medium">Username</th>
                                     <th className="text-left pb-3 text-gray-500 font-medium">Role</th>
+                                    <th className="text-left pb-3 text-gray-500 font-medium">Branch</th>
                                     <th className="text-left pb-3 text-gray-500 font-medium">Action</th>
                                 </tr>
                             </thead>
@@ -301,6 +339,11 @@ const AdminPanel = () => {
                                                     border: u.role === 'sysadmin' ? '1px solid rgba(147,51,234,0.3)' : '1px solid rgba(26,110,245,0.3)'
                                                 }}>
                                                 {u.role}
+                                            </span>
+                                        </td>
+                                        <td className="py-3">
+                                            <span className="text-xs font-bold text-slate-500 uppercase">
+                                                {u.branch || 'General'}
                                             </span>
                                         </td>
                                         <td className="py-3">

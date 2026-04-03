@@ -60,6 +60,7 @@ const Dashboard = () => {
     // Search & filter state
     const [search, setSearch] = useState('');
     const [filterType, setFilterType] = useState('all');
+    const [filterBranch, setFilterBranch] = useState('all');
     const [filterCap, setFilterCap] = useState('');
 
     const isAdmin = ['classroom_admin', 'seminar_admin', 'sysadmin'].includes(user?.role);
@@ -174,8 +175,9 @@ const Dashboard = () => {
     const filteredVenues = venues.filter(v => {
         const matchSearch = v.name.toLowerCase().includes(search.toLowerCase());
         const matchType = filterType === 'all' || v.type === filterType;
+        const matchBranch = filterBranch === 'all' || v.branch === filterBranch;
         const matchCap = !filterCap || v.capacity >= Number(filterCap);
-        return matchSearch && matchType && matchCap;
+        return matchSearch && matchType && matchBranch && matchCap;
     });
 
     // My bookings (for non-admin)
@@ -441,11 +443,19 @@ const Dashboard = () => {
                                         <option value="classroom">Classrooms</option>
                                         <option value="seminar_hall">Seminar Halls</option>
                                     </select>
+                                    <select value={filterBranch} onChange={e => setFilterBranch(e.target.value)}
+                                        className="input-dark w-32" style={{ padding: '0.5rem 1rem' }}>
+                                        <option value="all">All Branches</option>
+                                        <option value="General">General</option>
+                                        <option value="CSE">CSE</option>
+                                        <option value="ECE">ECE</option>
+                                        <option value="AIDS">AIDS</option>
+                                    </select>
                                     <input type="number" value={filterCap} onChange={e => setFilterCap(e.target.value)}
                                         placeholder="Min capacity"
                                         className="input-dark w-36" style={{ padding: '0.5rem 1rem' }} />
-                                    {(search || filterType !== 'all' || filterCap) && (
-                                        <button onClick={() => { setSearch(''); setFilterType('all'); setFilterCap(''); }}
+                                    {(search || filterType !== 'all' || filterBranch !== 'all' || filterCap) && (
+                                        <button onClick={() => { setSearch(''); setFilterType('all'); setFilterBranch('all'); setFilterCap(''); }}
                                             className="text-sm px-3 py-2 rounded-lg"
                                             style={{ background: 'rgba(224,32,32,0.2)', color: '#f87171' }}>
                                             Clear ✕
@@ -478,9 +488,14 @@ const Dashboard = () => {
 
                                             <div className="flex items-start justify-between mb-2">
                                                 <h3 className="font-bold text-white">{v.name}</h3>
-                                                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${v.type === 'classroom' ? 'badge-classroom' : 'badge-seminar'}`}>
-                                                    {v.type === 'classroom' ? 'Classroom' : 'Seminar Hall'}
-                                                </span>
+                                                <div className="flex flex-col items-end gap-1">
+                                                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${v.type === 'classroom' ? 'badge-classroom' : 'badge-seminar'}`}>
+                                                        {v.type === 'classroom' ? 'Classroom' : 'Seminar'}
+                                                    </span>
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">
+                                                        {v.branch || 'General'}
+                                                    </span>
+                                                </div>
                                             </div>
                                             <p className="text-gray-400 text-sm mb-3">👥 Capacity: {v.capacity}</p>
                                             <button onClick={() => navigate(`/book/${v._id}`)}

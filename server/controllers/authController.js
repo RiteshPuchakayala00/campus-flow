@@ -30,7 +30,8 @@ exports.register = async (req, res) => {
         const payload = {
             user: {
                 id: user.id,
-                role: user.role
+                role: user.role,
+                branch: user.branch || 'General'
             }
         };
 
@@ -41,7 +42,7 @@ exports.register = async (req, res) => {
             { expiresIn: '30d' },
             (err, token) => {
                 if (err) throw err;
-                res.json({ token, role: user.role });
+                res.json({ token, role: user.role, branch: user.branch || 'General' });
             }
         );
     } catch (err) {
@@ -71,7 +72,8 @@ exports.login = async (req, res) => {
         const payload = {
             user: {
                 id: user.id,
-                role: user.role
+                role: user.role,
+                branch: user.branch || 'General'
             }
         };
 
@@ -82,7 +84,7 @@ exports.login = async (req, res) => {
             { expiresIn: '30d' },
             (err, token) => {
                 if (err) throw err;
-                res.json({ token, role: user.role, username: user.username });
+                res.json({ token, role: user.role, username: user.username, branch: user.branch || 'General' });
             }
         );
     } catch (err) {

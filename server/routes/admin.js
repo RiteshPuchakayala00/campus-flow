@@ -26,7 +26,7 @@ router.get('/users', auth, sysadminOnly, async (req, res) => {
 // POST /api/admin/users  – add a user
 router.post('/users', auth, sysadminOnly, async (req, res) => {
     try {
-        const { username, password, role } = req.body;
+        const { username, password, role, branch } = req.body;
         let user = await User.findOne({ username });
         if (user) {
             return res.status(400).json({ message: 'User already exists' });
@@ -38,7 +38,8 @@ router.post('/users', auth, sysadminOnly, async (req, res) => {
         user = new User({
             username,
             password: hashedPassword,
-            role
+            role,
+            branch: role === 'sysadmin' ? 'Global' : (branch || 'General')
         });
         await user.save();
 
@@ -62,8 +63,8 @@ router.delete('/users/:id', auth, sysadminOnly, async (req, res) => {
 // POST /api/admin/venues  – add a venue
 router.post('/venues', auth, sysadminOnly, async (req, res) => {
     try {
-        const { name, type, capacity } = req.body;
-        const venue = new Venue({ name, type, capacity });
+        const { name, type, capacity, branch } = req.body;
+        const venue = new Venue({ name, type, capacity, branch: branch || 'General' });
         await venue.save();
         res.status(201).json(venue);
     } catch (err) {
