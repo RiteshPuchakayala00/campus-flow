@@ -33,7 +33,7 @@ const BookVenue = () => {
         }
         setLoading(true);
         try {
-            await api.post('/bookings', { venue: id, date, startTime, endTime, purpose, isWaitlist });
+            await api.post('/bookings', { venue_id: id, date, start_time: startTime, end_time: endTime, purpose, isWaitlist });
             setSuccess(true);
             showToast(isWaitlist ? 'Added to waitlist! ✓' : 'Booking request submitted! ✓', 'success');
             setTimeout(() => navigate('/dashboard'), 1800);
