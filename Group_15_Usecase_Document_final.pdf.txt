@@ -1,0 +1,495 @@
+Times New Roman
+Use Cases
+for
+Smart Class and Halls Vacancy Sharing
+System
+Version 1.0 approved
+Prepared by
+Ritesh Reddy
+Vamsi
+LJ Vishnu
+13 February 2026
+Revision History
+Name Date Reason For Changes Version
+Ritesh Reddy 13-02-2026 Initial Draft 1.0
+Vamsi 13-02-2026 Initial Draft 1.0
+LJ Vishnu 13-02-2026 Initial Draft 1.0
+Copyright©2026. All rights reserved.
+The various user classes identified the following use cases and primary actors for the
+Campus Management System:
+Primary Actor Use Cases
+Faculty 1. Book Classroom
+2. Request Extra Class
+3. Submit Event Proposal
+4. View Event Calendar
+Class Representative
+(CR)5. Book Classroom
+6. Submit Event Proposal
+7. View Event Calendar
+Classroom Admin 8. Approve Classroom Booking
+9. Reject Classroom Booking
+10. Manage Classroom Schedule
+Seminar Hall Admin 11. Approve Seminar Hall Booking
+12. Reject Seminar Hall Booking
+13. Manage Seminar Hall Schedule
+Event Organizer 14. Create Event
+15. Modify Event Details
+16. Cancel Event
+System Admin 17. Add Classroom Details
+18. Add Seminar Hall Details
+19. Manage User Accounts
+20. Generate System Usage Reports
+2
+Use Case 1: Book Classroom
+Covers Original Use Cases:
+•(1) Book Classroom
+•(2) Request Extra Class
+•(5) Book Classroom (CR)
+•(4) View Event Calendar
+•(7) View Event Calendar (CR)
+Use Case ID 1
+Use Case Name Book Classroom
+Created By Ritesh Reddy
+Last Updated By Ritesh Reddy
+Date Created 13 February 2026
+Date Last Updated 13 February 2026
+Actors Faculty, Class Representative (CR)
+Description A Faculty member or Class Representative accesses the
+Campus Management System to request booking of a
+classroom for conducting regular classes, extra classes,
+or academic events on a specified date and time slot.
+Preconditions 1. User must be logged into the system.
+2. Classroom details must exist in the database.
+3. User must have valid booking permission.
+Postconditions 1. Booking request is stored with status “Pending”.
+2. Notification is sent to the respective Classroom Ad-
+min.
+3. Time slot remains reserved until approval or rejec-
+tion.
+Normal Flow 1. User selects “Book Classroom” option.
+2. System displays available classrooms.
+3. User selects classroom, date and time slot.
+4. System checks classroom availability.
+5. System displays availability status.
+6. User enters purpose (Regular Class / Extra Class /
+Event).
+7. User submits booking request.
+8. System stores request with status “Pending”.
+9. System forwards request to Classroom Admin.
+10. System displays confirmation message.
+3
+Alternative Flows 1.1 Modify Booking (after step 3):
+a) User changes date or time.
+b) System rechecks availability.
+c) Return to step 5.
+1.2 Cancel Booking (before step 7):
+a) User cancels request.
+b) System terminates use case.
+Exceptions 1.0.E.1 Classroom Not Available (at step 4):
+a) System informs classroom is already booked.
+b) User selects different slot.
+1.0.E.2 Invalid Time Selection:
+a) System displays error message.
+b) User re-enters valid time.
+1.0.E.3 Unauthorized Access:
+a) System denies access.
+b) Use case terminates.
+Includes Check Venue Availability
+Send Notification
+Priority High
+Frequency of Use Frequently during academic sessions
+Business Rules 1. No classroom shall be double-booked for the same
+time slot.
+2. Booking is confirmed only after admin approval.
+Special Require-
+ments1. System shall perform real-time availability checking.
+2. Approved bookings shall automatically update the
+Event Calendar.
+Assumptions 1. All classrooms are pre-registered in the system.
+2. Each classroom has an assigned admin.
+Notes and Issues 1. Recurring weekly booking may be supported in future
+versions.
+4
+Use Case 2: Approve / Reject Classroom Booking
+Covers Original Use Cases:
+•(8) Approve Classroom Booking
+•(9) Reject Classroom Booking
+•(10) Manage Classroom Schedule
+Use Case ID 2
+Use Case Name Approve / Reject Classroom Booking
+Created By Vamsi
+Last Updated By Vamsi
+Date Created 13 February 2026
+Date Last Updated 13 February 2026
+Actors Classroom Admin
+Description The Classroom Admin reviews pending classroom book-
+ing requests submitted by Faculty or CR and decides to
+approve or reject the request based on availability and
+scheduling rules.
+Preconditions 1. Admin must be logged into the system.
+2. Booking request must exist with status “Pending”.
+Postconditions 1. Booking status is updated to “Approved” or “Re-
+jected”.
+2. User is notified of the decision.
+3. If approved, the classroom schedule is updated.
+Normal Flow 1. Admin logs into the system.
+2. Admin selects “View Pending Requests”.
+3. System displays list of pending classroom bookings.
+4. Admin selects a booking request.
+5. System displays booking details.
+6. Admin reviews date, time, and purpose.
+7. Admin selects “Approve” option.
+8. System updates booking status to “Approved”.
+9. System updates classroom schedule.
+10. System sends notification to the requester.
+Alternative Flows 2.1 Reject Booking Request (at step 7):
+a) Admin selects “Reject” option.
+b) Admin provides rejection reason.
+c) System updates status to “Rejected”.
+d) System notifies requester.
+5
+Exceptions 2.0.E.1 Booking No Longer Available (at step 6):
+a) System detects scheduling conflict.
+b) Admin cannot approve request.
+2.0.E.2 Unauthorized Access:
+a) System denies access.
+b) Use case terminates.
+Includes Update Classroom Schedule
+Send Notification
+Priority High
+Frequency of Use Daily during academic sessions
+Business Rules 1. Only assigned Classroom Admin can approve or re-
+ject requests.
+2. Approval must not violate existing schedule conflicts.
+Special Require-
+ments1. System shall maintain audit log of approval decisions.
+2. Notifications shall be sent immediately after decision.
+Assumptions 1. Admin has authority over assigned classrooms.
+Notes and Issues 1. Future enhancement may include auto-approval for
+recurring bookings.
+6
+Use Case 3: Book Seminar Hall
+Covers Original Use Cases:
+•Seminar Hall Booking Request
+•(14) Create Event
+Use Case ID 3
+Use Case Name Book Seminar Hall
+Created By LJ Vishnu
+Last Updated By LJ Vishnu
+Date Created 13 February 2026
+Date Last Updated 13 February 2026
+Actors Faculty, Event Organizer
+Description A Faculty member or Event Organizer requests booking
+of a seminar hall or auditorium for conducting seminars,
+workshops, guest lectures, or other academic events on
+a specified date and time slot.
+Preconditions 1. User must be logged into the system.
+2. Seminar hall details must exist in the system
+database.
+3. User must have valid booking permissions.
+Postconditions 1. Booking request is stored with status “Pending”.
+2. Request is forwarded to the respective Seminar Hall
+Admin.
+3. User receives confirmation of request submission.
+Normal Flow 1. User selects “Book Seminar Hall” option.
+2. System displays list of available seminar halls.
+3. User selects desired hall.
+4. User selects date and time slot.
+5. System checks hall availability.
+6. System displays availability status.
+7. User enters event details (Event Name, Purpose, Ex-
+pected Participants).
+8. User submits booking request.
+9. System stores request with status “Pending”.
+10. System forwards request to Seminar Hall Admin.
+11. System displays confirmation message.
+Alternative Flows 3.1 Modify Booking Details (after step 4):
+a) User changes date or time slot.
+b) System rechecks availability.
+c) Process returns to step 6.
+3.2 Cancel Booking Request (before step 8):
+a) User cancels request.
+b) System terminates use case.
+7
+Exceptions 3.0.E.1 Seminar Hall Not Available (at step 5):
+a) System informs user that hall is already booked.
+b) User selects another time slot or hall.
+3.0.E.2 Invalid Event Details:
+a) System displays validation error.
+b) User corrects event information.
+3.0.E.3 Unauthorized Access:
+a) System denies access.
+b) Use case terminates.
+Includes Check Venue Availability
+Send Notification
+Priority High
+Frequency of Use Frequently during academic and event periods
+Business Rules 1. Seminar hall shall not be double-booked.
+2. Booking must be approved by Seminar Hall Admin
+before confirmation.
+Special Require-
+ments1. System shall allow entry of detailed event informa-
+tion.
+2. Approved bookings shall automatically update the
+Event Calendar.
+Assumptions 1. All seminar halls are registered in the system.
+2. Each hall has an assigned admin for approval.
+Notes and Issues 1. Future enhancement may include resource request
+(Projector, Sound System).
+8
+Use Case 4: Approve / Reject Seminar Hall Booking
+Covers Original Use Cases:
+•(11) Approve Seminar Hall Booking
+•(12) Reject Seminar Hall Booking
+•(13) Manage Seminar Hall Schedule
+Use Case ID 4
+Use Case Name Approve / Reject Seminar Hall Booking
+Created By LJ Vishnu
+Last Updated By LJ Vishnu
+Date Created 13 February 2026
+Date Last Updated 13 February 2026
+Actors Seminar Hall Admin
+Description The Seminar Hall Admin reviews pending seminar hall
+booking requests submitted by Faculty or Event Orga-
+nizers and decides to approve or reject the request based
+on availability, scheduling constraints, and institutional
+policies.
+Preconditions 1. Admin must be logged into the system.
+2. Seminar hall booking request must exist with status
+“Pending”.
+Postconditions 1. Booking status is updated to “Approved” or “Re-
+jected”.
+2. If approved, the seminar hall schedule is updated.
+3. Requester is notified about the decision.
+Normal Flow 1. Admin logs into the system.
+2. Admin selects “View Pending Seminar Hall Re-
+quests”.
+3. System displays list of pending requests.
+4. Admin selects a request to review.
+5. System displays event details and requested time slot.
+6. Admin verifies availability and event details.
+7. Admin selects “Approve”.
+8. System updates booking status to “Approved”.
+9. System updates seminar hall schedule.
+10. System sends notification to requester.
+Alternative Flows 4.1 Reject Booking Request (at step 7):
+a) Admin selects “Reject”.
+b) Admin enters rejection reason.
+c) System updates status to “Rejected”.
+d) System notifies requester.
+9
+Exceptions 4.0.E.1 Scheduling Conflict Detected (at step 6):
+a) System identifies conflict in schedule.
+b) Admin cannot approve request.
+4.0.E.2 Unauthorized Access:
+a) System denies access to approval module.
+b) Use case terminates.
+Includes Update Seminar Hall Schedule
+Send Notification
+Priority High
+Frequency of Use Frequently during event scheduling periods
+Business Rules 1. Only assigned Seminar Hall Admin can approve or
+reject bookings.
+2. No double booking of seminar halls is allowed.
+Special Require-
+ments1. System shall maintain an audit log of approval deci-
+sions.
+2. Notifications shall be sent immediately after decision.
+Assumptions 1. Seminar hall admins are assigned to specific halls.
+Notes and Issues 1. Future enhancement may include automatic approval
+for low-priority events.
+10
+Use Case 5: Submit Event Proposal
+Covers Original Use Cases:
+•(3) Submit Event Proposal
+•(6) Submit Event Proposal (CR)
+Use Case ID 5
+Use Case Name Submit Event Proposal
+Created By Ritesh Reddy
+Last Updated By Ritesh Reddy
+Date Created 13 February 2026
+Date Last Updated 13 February 2026
+Actors Faculty, Class Representative (CR), Event Organizer
+Description A Faculty member, CR, or Event Organizer submits an
+event proposal through the Campus Management Sys-
+tem by providing event details such as event name, de-
+scription, expected participants, preferred venue, and
+date/time for approval by the respective venue admin.
+Preconditions 1. User must be logged into the system.
+2. User must have permission to organize events.
+Postconditions 1. Event proposal is stored in the system with status
+“Pending Approval”.
+2. Proposal is forwarded to the respective venue admin.
+3. User receives confirmation of proposal submission.
+Normal Flow 1. User selects “Submit Event Proposal” option.
+2. System displays event proposal form.
+3. User enters event details (Event Name, Description,
+Date, Time).
+4. User selects preferred venue (Classroom / Seminar
+Hall).
+5. System checks preliminary availability of selected
+venue.
+6. User confirms submission of proposal.
+7. System stores proposal with status “Pending Ap-
+proval”.
+8. System forwards proposal to respective venue admin.
+9. System displays confirmation message.
+Alternative Flows 5.1 Modify Proposal Before Submission (before step 6):
+a) User edits event details.
+b) System updates information.
+5.2 Cancel Proposal Submission:
+a) User cancels proposal.
+b) System terminates use case.
+11
+Exceptions 5.0.E.1 Venue Not Available (at step 5):
+a) System informs user of conflict.
+b) User selects different venue or time.
+5.0.E.2 Incomplete Event Details:
+a) System displays validation error.
+b) User provides missing information.
+5.0.E.3 Unauthorized Access:
+a) System denies access.
+b) Use case terminates.
+Includes Check Venue Availability
+Send Notification
+Priority High
+Frequency of Use Moderate to high during academic events
+Business Rules 1. Event must be approved by respective venue admin
+before confirmation.
+2. Events must not conflict with existing bookings.
+Special Require-
+ments1. System shall allow entry of detailed event description.
+2. All event proposals shall be recorded for auditing
+purposes.
+Assumptions 1. Users organizing events have appropriate institu-
+tional permissions.
+Notes and Issues 1. Future enhancement may include resource request
+(Projector, Sound System).
+12
+Use Case 6: Manage Event (Modify / Cancel Event)
+Covers Original Use Cases:
+•(15) Modify Event Details
+•(16) Cancel Event
+Use Case ID 6
+Use Case Name Manage Event (Modify / Cancel Event)
+Created By Vamsi
+Last Updated By Vamsi
+Date Created 13 February 2026
+Date Last Updated 13 February 2026
+Actors Event Organizer, Faculty, Class Representative (CR)
+Description An Event Organizer, Faculty member, or CR manages
+an existing event by modifying event details such as
+date, time, venue, or description, or cancels the event
+before its scheduled date.
+Preconditions 1. User must be logged into the system.
+2. Event must already exist in the system.
+3. User must have permission to manage the event.
+Postconditions 1. Event details are updated in the system if modified.
+2. Event status is updated to “Cancelled” if cancelled.
+3. Relevant users are notified about the change.
+Normal Flow
+(Modify Event)1. User selects “Manage My Events”.
+2. System displays list of events created by the user.
+3. User selects an event to modify.
+4. System displays existing event details.
+5. User updates required fields (date, time, venue, de-
+scription).
+6. System checks availability if venue or time is changed.
+7. User submits updated details.
+8. System saves changes.
+9. System notifies concerned users about modification.
+Alternative Flow
+(Cancel Event)6.1 Cancel Event (after step 3):
+a) User selects “Cancel Event”.
+b) System asks for confirmation.
+c) User confirms cancellation.
+d) System updates event status to “Cancelled”.
+e) System notifies participants and venue admin.
+13
+Exceptions 6.0.E.1 Venue Conflict After Modification (at step 6):
+a) System detects scheduling conflict.
+b) User must select different time or venue.
+6.0.E.2 Unauthorized Access:
+a) System denies access to event management.
+b) Use case terminates.
+Includes Check Venue Availability
+Update Event Details
+Send Notification
+Priority Medium to High
+Frequency of Use Moderate during academic and event periods
+Business Rules 1. Only event creator or authorized personnel can mod-
+ify or cancel event.
+2. Cancelled events must release reserved venue auto-
+matically.
+Special Require-
+ments1. System shall log all modifications for audit purposes.
+2. Cancellation notifications must be sent immediately.
+Assumptions 1. Events are associated with a specific venue booking.
+Notes and Issues 1. Future enhancement may include rescheduling option
+without full cancellation.
+14
+Use Case 7: Manage System (Venue & User Manage-
+ment)
+Covers Original Use Cases:
+•(17) Add Classroom Details
+•(18) Add Seminar Hall Details
+•(19) Manage User Accounts
+•(20) Generate System Usage Reports
+Use Case ID 7
+Use Case Name Manage System (Venue & User Management)
+Created By LJ Vishnu
+Last Updated By LJ Vishnu
+Date Created 13 February 2026
+Date Last Updated 13 February 2026
+Actors System Admin
+Description The System Admin manages core system configurations
+including adding or updating classroom and seminar hall
+details, creating and managing user accounts, assigning
+roles, and maintaining system records.
+Preconditions 1. Admin must be logged into the system.
+2. Admin must have system-level privileges.
+Postconditions 1. Venue details are added or updated in the system.
+2. User accounts are created, updated, or removed.
+3. Role assignments are updated successfully.
+Normal Flow
+(Manage Venues)1. Admin selects “Manage Venues”.
+2. System displays list of existing classrooms and semi-
+nar halls.
+3. Admin selects “Add” or “Edit” venue.
+4. Admin enters or updates venue details (Name, Ca-
+pacity, Location).
+5. Admin saves changes.
+6. System updates venue information in database.
+Alternative Flow
+(Manage Users)7.1 Manage User Accounts:
+a) Admin selects “Manage Users”.
+b) System displays list of registered users.
+c) Admin adds new user or updates existing user de-
+tails.
+d) Admin assigns role (Faculty / CR / Admin).
+e) System saves user information.
+15
+Exceptions 7.0.E.1 Duplicate Venue Entry:
+a) System detects duplicate venue name.
+b) Admin must enter unique details.
+7.0.E.2 Invalid User Information:
+a) System displays validation error.
+b) Admin corrects information.
+7.0.E.3 Unauthorized Access:
+a) System denies access.
+b) Use case terminates.
+Includes Validate Input
+Update Database Records
+Priority High
+Frequency of Use Occasional (Administrative operations)
+Business Rules 1. Only System Admin can modify venue and user
+records.
+2. Each user must have a defined role in the system.
+Special Require-
+ments1. System shall maintain audit logs for all administra-
+tive actions.
+2. Data consistency must be ensured during updates.
+Assumptions 1. System Admin has full system control privileges.
+Notes and Issues 1. Future enhancement may include automated role-
+based access control policies.
+16

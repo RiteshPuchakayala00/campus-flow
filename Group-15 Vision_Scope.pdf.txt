@@ -1,0 +1,245 @@
+National Institute of Technology Warangal
+Software Engineering Lab
+Classroom & Seminar Hall Booking System
+Vision Document
+Version 1.0
+Authors:
+Ritesh Reddy
+Vamsi Krishna
+Vishnu Vardhan
+Date: January 2026
+Document ID: CSHBS-VSD-2026-001
+1
+Revision History
+Date Version Description Author
+30-Jan-2026 1.0 Initial version of Vision Document Project Team
+2
+Contents
+1 Introduction 5
+1.1 Purpose . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+1.2 Scope . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+1.3 Definitions, Acronyms, and Abbreviations . . . . . . . . . . . . . . . . . 5
+1.4 References . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+1.5 Overview . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+2 Positioning 5
+2.1 Business Opportunity . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+2.2 Problem Statement . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+2.3 Product Position Statement . . . . . . . . . . . . . . . . . . . . . . . . . 6
+3 Stakeholder and User Descriptions 6
+3.1 Market Demographics . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+3.2 Stakeholder Summary . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+3.3 User Summary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+3.4 User Environment . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+3.5 Key Stakeholder or User Needs . . . . . . . . . . . . . . . . . . . . . . . 7
+3.6 Alternatives and Competition . . . . . . . . . . . . . . . . . . . . . . . . 7
+4 Product Overview 7
+4.1 Product Perspective . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+4.2 Summary of Capabilities . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+4.3 Assumptions and Dependencies . . . . . . . . . . . . . . . . . . . . . . . 7
+5 Product Features 7
+5.1 Core Features . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+6 Constraints 8
+7 Quality Ranges 9
+8 Precedence and Priority 9
+8.1 High Priority (Must Have – Phase 1) . . . . . . . . . . . . . . . . . . . . 9
+8.2 Medium Priority (Should Have – Phase 2) . . . . . . . . . . . . . . . . . 9
+8.3 Low Priority (Future Enhancements) . . . . . . . . . . . . . . . . . . . . 10
+3
+9 Other Product Requirements 10
+9.1 Applicable Standards . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+9.2 System Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+9.3 Performance Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+9.4 Environmental Requirements . . . . . . . . . . . . . . . . . . . . . . . . . 10
+10 Documentation Requirements 10
+10.1 User Manual . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+10.2 Online Help . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+10.3 Installation and Configuration . . . . . . . . . . . . . . . . . . . . . . . . 10
+10.4 Labeling . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+4
+1. Introduction
+This document defines the vision and scope of the Classroom and Seminar Hall Booking
+System (CSHBS), developed as part of the Software Engineering Lab.
+1.1 Purpose
+To provide a clear understanding of system objectives, scope, and stakeholder expecta-
+tions.
+1.2 Scope
+CSHBS is a web-based application that enables booking and management of classrooms
+and seminar halls by faculty, class representatives, and administrators.
+1.3 Definitions, Acronyms, and Abbreviations
+•CSHBS – Classroom and Seminar Hall Booking System
+•CR – Class Representative
+•Admin – Infrastructure Administrator
+•Slot – Time interval for booking
+1.4 References
+SE Lab Guidelines, IEEE Vision Document Template.
+1.5 Overview
+This document covers positioning, stakeholders, product overview, features, constraints,
+quality attributes, and priorities.
+2. Positioning
+2.1 Business Opportunity
+Manual classroom scheduling leads to conflicts and inefficient resource usage. A central-
+ized digital system improves transparency and utilization.
+5
+2.2 Problem Statement
+The problem of unmanaged room scheduling affects faculty, students, and administrators
+the impact of which is double booking, wasted resources, and disruptions a successful
+solution would be real-time availability, authorization control, and notifications.
+2.3 Product Position Statement
+For academic institutions requiring efficient room management, CSHBS is a web-based
+booking system that provides real-time scheduling and approval workflows unlike manual
+coordination methods.
+3. Stakeholder and User Descriptions
+3.1 Market Demographics
+Target users include faculty, students, and administrators in medium to large educational
+institutions.
+3.2 Stakeholder Summary
+Name Description Responsibilities
+Faculty Teaching staff Book classrooms and semi-
+nar halls
+CR Student representative Request rooms for class
+needs
+Admin Infrastructure authority Approvals and monitoring
+Project Team SE students Development and testing
+3.3 User Summary
+User Description Responsibilities Stakeholder
+Faculty Course instructors Book and cancel
+roomsAcademic Dept
+CR Class Representative Request bookings Students
+Admin System manager Approvals, reports Institute
+3.4 User Environment
+Users access the system via web browsers on desktops or mobile devices.
+6
+3.5 Key Stakeholder or User Needs
+Need Priority Current Solution Proposed Solution
+Avoid conflicts High Manual checking Automated validation
+Room availability High Notice boards Live dashboard
+Authorization High Verbal approval Role-based approval
+Notifications Medium Informal messages System alerts
+3.6 Alternatives and Competition
+Alternative Strengths Weaknesses
+Manual Registers Simple Error-prone
+WhatsApp Groups Fast No validation
+Generic Calendars Ready-made No approvals
+4. Product Overview
+4.1 Product Perspective
+CSHBS is a standalone web application with role-based access.
+4.2 Summary of Capabilities
+Capability Description
+Room Booking Book classrooms and seminar halls
+Availability Check Real-time availability display
+Approval Workflow Admin authorization
+Notifications Booking confirmations
+Reports Usage history
+4.3 Assumptions and Dependencies
+Assumes internet access and authenticated institutional users.
+5. Product Features
+This section describes the primary features offered by the Classroom and Seminar Hall
+Booking System. These features are designed to address the needs of stakeholders and
+ensure efficient utilization of academic infrastructure.
+7
+5.1 Core Features
+•The system provides secure authentication with role-based access for faculty, class
+representatives, and administrators.
+•Faculty members can book classrooms for regular or extra classes by selecting date,
+time slot, and room based on availability.
+•Class representatives are allowed to request classrooms or seminar halls for academic
+activities with proper authorization.
+•The system displays real-time availability of classrooms and seminar halls to prevent
+double booking.
+•Seminar halls can be booked for events, guest lectures, workshops, and academic
+sessions.
+•An approval workflow ensures that all booking requests are verified by the respective
+managing authority.
+•Users can modify or cancel bookings within permitted time limits.
+•The system sends booking confirmation and status notifications to users through
+system alerts and optional email or SMS services.
+•Administrators are provided with a dashboard to monitor bookings, manage rooms,
+and generate usage reports.
+6. Constraints
+The following constraints apply to the development and operation of the Classroom and
+Seminar Hall Booking System.
+•The project must be completed within a single academic semester as part of the
+Software Engineering Lab.
+•The development team consists of only three students, limiting available develop-
+ment resources.
+•The project has no allocated budget and must rely on open-source technologies.
+•The system must operate on standard institutional infrastructure without special-
+ized hardware.
+•Minimal user training should be required for faculty and students.
+8
+•The system must enforce role-based access control to ensure security and data
+integrity.
+7. Quality Ranges
+This section defines the expected quality attributes of the system and their acceptable
+ranges.
+•The system should respond to user actions within 2 seconds under normal load.
+•The system should maintain at least 95% uptime during institutional working hours.
+•Users should be able to complete a booking process within one minute.
+•The system should support multiple concurrent users during peak hours.
+•Security mechanisms should prevent unauthorized access and booking manipula-
+tion.
+•The system should be maintainable and extensible for future enhancements.
+8. Precedence and Priority
+The features of the Classroom and Seminar Hall Booking System are prioritized as follows.
+8.1 High Priority (Must Have – Phase 1)
+•User authentication and role-based access control
+•Classroom and seminar hall booking functionality
+•Real-time availability checking
+•Conflict prevention and double booking control
+•Admin approval workflow
+8.2 Medium Priority (Should Have – Phase 2)
+•Notification system (email or SMS)
+•Booking modification and cancellation
+•Booking history and reports
+9
+8.3 Low Priority (Future Enhancements)
+•Mobile application support
+•Integration with academic timetables
+•Advanced analytics and optimization features
+9. Other Product Requirements
+9.1 Applicable Standards
+The system should comply with standard web technologies, security guidelines, and soft-
+ware engineering best practices.
+9.2 System Requirements
+The system requires a web server, database support, and modern web browsers on the
+client side.
+9.3 Performance Requirements
+The system should efficiently handle concurrent booking requests with minimal latency.
+9.4 Environmental Requirements
+The system should operate reliably within the institutional network and be accessible
+from both desktop and mobile devices.
+10. Documentation Requirements
+10.1 User Manual
+A user manual must be provided explaining system usage for faculty, class representatives,
+and administrators.
+10.2 Online Help
+The system should include context-sensitive help and frequently asked questions.
+10.3 Installation and Configuration
+Technical documentation should describe system installation, configuration, and deploy-
+ment procedures.
+10
+10.4 Labeling
+All documents should include version information, project title, and authorship details.
+Appendix A: Feature Attributes
+This appendix describes the attributes associated with the key features of the Class-
+room and Seminar Hall Booking System. These attributes help in understanding the
+importance, effort, risk, and stability of each feature during development.
+Feature Status Benefit Effort Risk
+User Authenti-
+cationApproved Critical Medium Low
+Classroom
+BookingApproved Critical Medium Low
+Seminar Hall
+BookingApproved Critical Medium Low
+Real-Time
+AvailabilityApproved Important Medium Medium
+Approval Work-
+flowApproved Critical High Medium
+Booking Modifi-
+cationProposed Useful Low Low
+Notifications Proposed Important Low Low
+Admin Dash-
+boardApproved Important Medium Medium
+Reports and His-
+toryProposed Useful Low Low
+11

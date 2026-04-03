@@ -1,0 +1,426 @@
+Software Requirements
+Specification
+for
+<Smart Class and HallsVacancy Sharing
+System>
+Version 1.0 approved
+Prepared by
+Ritesh Reddy
+Vamsi
+LJ Vishnu
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 2
+Table of Contents
+Table of Contents ii
+Revision History ii
+1. Introduction4
+1.1 Purpose 4
+1.2 Document Conventions 4
+1.3 Intended Audience and Reading Suggestions 4
+1.4 Product Scope 4
+1.5 References 4
+2. Overall Description5
+2.1 Product Perspective 5
+2.2 Product Functions 5
+2.3 User Classes and Characteristics 5
+2.4 Operating Environment 5
+2.5 Design and Implementation Constraints 6
+2.6 User Documentation 6
+2.7 Assumptions and Dependencies 6
+3. External Interface Requirements6
+3.1 User Interfaces 6
+3.2 Hardware Interfaces 7
+3.3 Software Interfaces 7
+3.4 Communications Interfaces 7
+4. System Features8
+4.1 Book Classroom 8
+4.2 Approve / Reject Classroom Booking 9
+4.3 Book Seminar Hall 10
+4.4 Approve / Reject Seminar Hall Booking 11
+4.5 Submit Event Proposal 12
+4.6 Manage Event (Modify / Cancel Event) 13
+4.7 Manage System (Venue & User Management) 14
+5. Other Nonfunctional Requirements14
+5.1 Performance Requirements 14
+5.2 Safety Requirements 15
+5.3 Security Requirements 15
+5.4 Software Quality Attributes 15
+5.5 Business Rules 15
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 3
+6. Other Requirements16
+Appendix A: Glossary16
+Appendix B: Analysis Models17
+Appendix C: To Be Determined List17
+Revision History
+Name Date Reason For Changes Version
+1.0
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 4
+1 Introduction
+1.1 Purpose
+This document presents the Software Requirements Specification (SRS) for the Smart Class
+and Halls Vacancy Sharing System. The purpose of this document is to define the functional
+and non-functional requirements of the system that manages classroom bookings, seminar hall
+reservations, and campus event scheduling. This SRS describes the complete system includ-
+ing booking management, approval workflows, event proposal submission, and administrative
+controls. It serves as a reference for developers, stakeholders, and administrators involved in
+the system development and maintenance.
+1.2 Document Conventions
+This document follows the IEEE standard format for Software Requirements Specification.
+Section headings are numbered hierarchically. Functional requirements are identified using
+unique identifiers (e.g., REQ_01, REQ_02). All requirements stated in this document are
+considered mandatory unless otherwise specified. Italicized text is used where necessary to
+emphasize important concepts.
+1.3 Intended Audience and Reading Suggestions
+This document is intended for developers, project managers, faculty members, system admin-
+istrators, and stakeholders of the institution. Developers should focus on the functional and in-
+terface requirements. Administrators should review system features and security requirements.
+Faculty members and event organizers should refer to system features related to booking and
+event management. It is recommended to read the document sequentially, beginning with the
+Introduction and Overall Description before proceeding to detailed system features.
+1.4 Product Scope
+The Smart Class and Halls Vacancy Sharing System is a campus management solution designed
+to simplify classroom and seminar hall booking processes. The system allows faculty members
+and class representatives to request classroom bookings, submit event proposals, and manage
+academic events. It enables venue administrators to approve or reject booking requests while
+ensuring no scheduling conflicts occur. The system improves transparency, reduces manual
+coordination, and ensures efficient utilization of institutional resources.
+1.5 References
+• Use Case Document – Group 15, Version 1.0, February 2026.
+• IEEE Software Requirements Specification Template.
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 5
+2 Overall Description
+2.1 Product Perspective
+The Smart Class and Halls Vacancy Sharing System is a web-based application developed
+to automate the management of classroom and seminar hall bookings within an educational
+institution. It replaces traditional manual booking processes and reduces scheduling conflicts.
+The system interacts with users such as Faculty, Class Representatives (CR), Event Organizers,
+Classroom Admins, Seminar Hall Admins, and System Admins. It maintains centralized data
+storage for venue details, booking requests, and event records.
+2.2 Product Functions
+The system provides the following major functions:
+• Allow faculty and CR to book classrooms.
+• Allow submission of event proposals.
+• Allow booking of seminar halls for events.
+• Enable admins to approve or reject booking requests.
+• Provide event modification and cancellation features.
+• Maintain real-time venue availability checking.
+• Manage user accounts and assign roles.
+• Generate system usage reports.
+2.3 User Classes and Characteristics
+The system includes the following user classes:
+•Faculty:Can book classrooms, request extra classes, and submit event proposals.
+•Class Representative (CR):Can book classrooms and submit event proposals.
+•Event Organizer:Can create, modify, or cancel events.
+•Classroom Admin:Approves or rejects classroom booking requests.
+•Seminar Hall Admin:Approves or rejects seminar hall booking requests.
+•System Admin:Manages venues, user accounts, and system records.
+2.4 Operating Environment
+The system operates in a web-based environment and can be accessed through modern web
+browsers such as Google Chrome, Mozilla Firefox, and Microsoft Edge. It supports desktop
+and laptop devices running Windows, macOS, or Linux operating systems. The system requires
+an active internet connection for real-time booking and notification features.
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 6
+2.5 Design and Implementation Constraints
+The system must ensure no double booking of venues. It must follow institutional access
+control policies. The system should be scalable to support multiple concurrent users during
+peak academic periods. Data security and privacy must be maintained. The system should be
+developed using reliable web technologies and a centralized database management system.
+2.6 User Documentation
+User documentation will include:
+• User manual describing booking procedures.
+• Administrator guide for approval workflows.
+• Online help support within the system interface.
+2.7 Assumptions and Dependencies
+• All classrooms and seminar halls are pre-registered in the system.
+• Users are assigned appropriate roles by the System Admin.
+• The institution provides stable internet connectivity.
+• The system depends on a centralized database for storing booking and event information.
+3 External Interface Requirements
+3.1 User Interfaces
+The Smart Class and Halls Vacancy Sharing System provides a web-based graphical user inter-
+face (GUI) accessible through standard web browsers. The interface is designed to be simple,
+user-friendly, and role-based.
+The main user interface components include:
+•Login Page:Allows users to enter username and password for authentication.
+•Dashboard:Displays options based on user roles (Faculty, CR, Admin, Event Orga-
+nizer).
+•Booking Form:Enables users to select venue, date, time slot, and purpose.
+•Event Proposal Form:Allows submission of event details including event name, de-
+scription, expected participants, and preferred venue.
+•Approval Interface:Allows venue admins to review, approve, or reject booking re-
+quests.
+•System Management Interface:Enables System Admin to manage users and venue
+details.
+All pages shall include navigation menus and logout functionality. Error messages shall be
+clearly displayed for invalid inputs or scheduling conflicts.
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 7
+3.2 Hardware Interfaces
+The system does not require specialized hardware. It can operate on:
+• Desktop Computers
+• Laptops
+• Institutional Computer Lab Systems
+Minimum hardware requirements include:
+• Processor: Dual Core or higher
+• RAM: Minimum 4 GB
+• Internet Connectivity
+The system does not directly interact with hardware devices such as biometric scanners or
+physical display boards in the current version.
+3.3 Software Interfaces
+The system interfaces with the following software components:
+• Web Browser (Google Chrome, Mozilla Firefox, Microsoft Edge)
+• Database Management System (e.g., MySQL or PostgreSQL)
+• Web Server (e.g., Apache or Nginx)
+The system stores and retrieves data related to users, venues, bookings, and events from a
+centralized database. It may use backend frameworks and server-side technologies for process-
+ing booking requests and approval workflows.
+3.4 Communications Interfaces
+The system requires internet connectivity to function properly. Communication interfaces in-
+clude:
+• HTTP/HTTPS protocol for web communication.
+• Email notification system for sending booking confirmations and approval decisions.
+All communication shall be secured using HTTPS protocol to ensure data privacy and pro-
+tection. Notification messages shall be generated automatically when booking status changes
+or event modifications occur.
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 8
+4 System Features
+4.1 Book Classroom
+4.1.1 Description and Priority
+This feature allows Faculty members and Class Representatives (CR) to request booking of a
+classroom for regular classes, extra classes, or academic events. The system checks real-time
+availability before submitting the request.
+Priority: High
+4.1.2 Stimulus/Response Sequences
+1. User selects the “Book Classroom” option.
+2. System displays available classrooms.
+3. User selects classroom, date, and time slot.
+4. System checks classroom availability.
+5. System displays availability status.
+6. User enters purpose of booking.
+7. User submits the booking request.
+8. System stores request with status “Pending”.
+9. System forwards request to Classroom Admin.
+10. System displays confirmation message.
+4.1.3 Functional Requirements
+• REQ_01: The system shall allow Faculty and CR to request classroom booking.
+• REQ_02: The system shall check classroom availability in real time.
+• REQ_03: The system shall prevent double booking of classrooms.
+• REQ_04: The system shall store booking requests with status “Pending”.
+• REQ_05: The system shall notify the respective Classroom Admin.
+• REQ_06: The system shall display appropriate error messages for invalid time slots.
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 9
+4.2 Approve / Reject Classroom Booking
+4.2.1 Description and Priority
+This feature allows the Classroom Admin to review pending booking requests and approve or
+reject them based on availability and scheduling rules.
+Priority: High
+4.2.2 Stimulus/Response Sequences
+1. Admin logs into the system.
+2. Admin selects “View Pending Requests”.
+3. System displays list of pending bookings.
+4. Admin selects a booking request.
+5. System displays booking details.
+6. Admin reviews date, time, and purpose.
+7. Admin selects “Approve” or “Reject”.
+8. System updates booking status.
+9. System updates classroom schedule if approved.
+10. System notifies the requester.
+4.2.3 Functional Requirements
+• REQ_07: The system shall allow Classroom Admin to view pending booking requests.
+• REQ_08: The system shall allow Admin to approve booking requests.
+• REQ_09: The system shall allow Admin to reject booking requests with reason.
+• REQ_10: The system shall update classroom schedule upon approval.
+• REQ_11: The system shall notify the user about approval or rejection.
+• REQ_12: The system shall maintain audit logs of approval decisions.
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 10
+4.3 Book Seminar Hall
+4.3.1 Description and Priority
+This feature allows Faculty members and Event Organizers to request booking of a seminar
+hall or auditorium for conducting seminars, workshops, guest lectures, and academic events.
+The system verifies venue availability before submission.
+Priority: High
+4.3.2 Stimulus/Response Sequences
+1. User selects the “Book Seminar Hall” option.
+2. System displays list of available seminar halls.
+3. User selects desired hall.
+4. User selects date and time slot.
+5. System checks hall availability.
+6. System displays availability status.
+7. User enters event details (Event Name, Purpose, Expected Participants).
+8. User submits booking request.
+9. System stores request with status “Pending”.
+10. System forwards request to Seminar Hall Admin.
+11. System displays confirmation message.
+4.3.3 Functional Requirements
+• REQ_13: The system shall allow Faculty and Event Organizers to request seminar hall
+bookings.
+• REQ_14: The system shall check seminar hall availability in real time.
+• REQ_15: The system shall prevent double booking of seminar halls.
+• REQ_16: The system shall allow users to enter detailed event information.
+• REQ_17: The system shall store booking requests with status “Pending”.
+• REQ_18: The system shall notify the respective Seminar Hall Admin.
+• REQ_19: The system shall display validation errors for incomplete event details.
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 11
+4.4 Approve / Reject Seminar Hall Booking
+4.4.1 Description and Priority
+This feature allows the Seminar Hall Admin to review pending seminar hall booking requests
+and approve or reject them based on scheduling constraints and institutional policies.
+Priority: High
+4.4.2 Stimulus/Response Sequences
+1. Admin logs into the system.
+2. Admin selects “View Pending Seminar Hall Requests”.
+3. System displays list of pending requests.
+4. Admin selects a request to review.
+5. System displays event details and requested time slot.
+6. Admin verifies availability and event details.
+7. Admin selects “Approve” or “Reject”.
+8. System updates booking status.
+9. System updates seminar hall schedule if approved.
+10. System sends notification to requester.
+4.4.3 Functional Requirements
+• REQ_20: The system shall allow Seminar Hall Admin to view pending booking requests.
+• REQ_21: The system shall allow Admin to approve seminar hall bookings.
+• REQ_22: The system shall allow Admin to reject bookings with a specified reason.
+• REQ_23: The system shall update seminar hall schedule upon approval.
+• REQ_24: The system shall notify the requester of the decision.
+• REQ_25: The system shall maintain audit logs of approval actions.
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 12
+4.5 Submit Event Proposal
+4.5.1 Description and Priority
+This feature allows Faculty members, Class Representatives (CR), and Event Organizers to
+submit event proposals including event details and preferred venue for approval.
+Priority: High
+4.5.2 Stimulus/Response Sequences
+1. User selects “Submit Event Proposal”.
+2. System displays event proposal form.
+3. User enters event details (Name, Description, Date, Time).
+4. User selects preferred venue.
+5. System checks preliminary venue availability.
+6. User confirms submission.
+7. System stores proposal with status “Pending Approval”.
+8. System forwards proposal to respective venue admin.
+9. System displays confirmation message.
+4.5.3 Functional Requirements
+• REQ_26: The system shall allow authorized users to submit event proposals.
+• REQ_27: The system shall allow entry of detailed event information.
+• REQ_28: The system shall verify venue availability before submission.
+• REQ_29: The system shall store proposals with status “Pending Approval”.
+• REQ_30: The system shall notify the respective venue admin.
+• REQ_31: The system shall prevent event scheduling conflicts.
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 13
+4.6 Manage Event (Modify / Cancel Event)
+4.6.1 Description and Priority
+This feature allows Event Organizers, Faculty, and CR to modify event details or cancel events
+before the scheduled date.
+Priority: Medium to High
+4.6.2 Stimulus/Response Sequences
+1. User selects “Manage My Events”.
+2. System displays list of user-created events.
+3. User selects an event.
+4. User modifies event details or selects “Cancel Event”.
+5. System checks venue availability if changes are made.
+6. User confirms changes.
+7. System updates event details or marks event as “Cancelled”.
+8. System notifies concerned users and venue admin.
+4.6.3 Functional Requirements
+• REQ_32: The system shall allow event creators to modify event details.
+• REQ_33: The system shall allow authorized users to cancel events.
+• REQ_34: The system shall release reserved venue upon cancellation.
+• REQ_35: The system shall check venue availability when event details are modified.
+• REQ_36: The system shall notify affected users of modifications or cancellations.
+• REQ_37: The system shall maintain logs of all event changes.
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 14
+4.7 Manage System (Venue & User Management)
+4.7.1 Description and Priority
+This feature allows the System Admin to manage venue records, user accounts, and system
+configurations including role assignments.
+Priority: High
+4.7.2 Stimulus/Response Sequences
+1. Admin logs into the system.
+2. Admin selects “Manage Venues” or “Manage Users”.
+3. System displays current records.
+4. Admin adds, edits, or removes venue/user information.
+5. Admin assigns appropriate user roles.
+6. System validates entered information.
+7. System updates database records.
+8. System confirms successful update.
+4.7.3 Functional Requirements
+• REQ_38: The system shall allow System Admin to add or update venue details.
+• REQ_39: The system shall allow System Admin to create, update, or delete user ac-
+counts.
+• REQ_40: The system shall allow role assignment to users.
+• REQ_41: The system shall validate input data before saving records.
+• REQ_42: The system shall maintain audit logs for administrative actions.
+• REQ_43: The system shall ensure data consistency during updates.
+5 Other Nonfunctional Requirements
+5.1 Performance Requirements
+• The system shall perform real-time venue availability checking within 3 seconds.
+• The system shall support multiple concurrent users during peak academic hours.
+• Booking confirmation or rejection notifications shall be generated immediately after ad-
+min action.
+• The system shall handle at least 200 simultaneous users without performance degrada-
+tion.
+• Page loading time shall not exceed 5 seconds under normal network conditions.
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 15
+5.2 Safety Requirements
+• The system shall prevent accidental deletion of venue or booking records.
+• The system shall require confirmation before cancelling events.
+• The system shall maintain backup records to prevent data loss.
+• The system shall ensure that cancelled bookings automatically release reserved time
+slots.
+5.3 Security Requirements
+• The system shall require user authentication before granting access.
+• The system shall implement role-based access control.
+• Only authorized admins shall approve or reject bookings.
+• The system shall encrypt user passwords in the database.
+• The system shall use HTTPS protocol to secure communication.
+• The system shall maintain audit logs for all administrative actions.
+5.4 Software Quality Attributes
+•Usability:The interface shall be simple and easy to use for faculty and students.
+•Reliability:The system shall operate without failure during academic sessions.
+•Availability:The system shall be available 24/7 except during scheduled maintenance.
+•Maintainability:The system shall allow easy updates and enhancements.
+•Scalability:The system shall support addition of new venues and increased user load.
+•Portability:The system shall operate across different operating systems and browsers.
+5.5 Business Rules
+• No classroom or seminar hall shall be double-booked for the same time slot.
+• Booking requests must be approved by the respective venue admin before confirmation.
+• Only System Admin shall manage venue and user records.
+• Only event creators or authorized personnel may modify or cancel events.
+• Every user must have an assigned role within the system.
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 16
+6 Other Requirements
+6.1 Database Requirements
+• The system shall maintain a centralized database for storing user accounts, venue details,
+booking records, and event information.
+• Each booking record shall contain user ID, venue ID, date, time slot, purpose, and status.
+• Each event record shall store event name, description, organizer details, venue, and
+schedule.
+• The database shall ensure referential integrity and consistency.
+6.2 Legal Requirements
+• The system shall comply with institutional data protection policies.
+• User data shall not be shared with unauthorized third parties.
+6.3 Future Enhancements
+• Integration with SMS notification system.
+• Resource booking support (Projector, Sound System).
+• Automatic recurring booking feature.
+• Role-based automated approval for low-priority events.
+Appendix A: Glossary
+•Faculty:Teaching staff authorized to conduct classes and events.
+•CR (Class Representative):Student representative authorized to book classrooms.
+•Event Organizer:User responsible for planning and managing events.
+•Classroom Admin:Administrator responsible for classroom booking approvals.
+•Seminar Hall Admin:Administrator responsible for seminar hall approvals.
+•System Admin:Administrator with full system management privileges.
+•Booking Request:A request submitted for reserving a venue.
+•Event Proposal:A formal request to conduct an event within the campus.
+Software Requirements Specification for <Smart Class and Halls Vacancy Sharing System> Page 17
+Appendix B: Analysis Models
+The system may include the following analysis models:
+• Use Case Diagram representing user interactions.
+• Entity Relationship (ER) Diagram representing database structure.
+• Activity Diagrams for booking and approval workflows.
+• Sequence Diagrams for event management processes.
+Appendix C: To Be Determined List
+• Final decision on SMS integration.
+• Selection of database management system.
+• Maximum supported concurrent user load.
+• Future mobile application support.
