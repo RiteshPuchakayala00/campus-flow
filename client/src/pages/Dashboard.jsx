@@ -86,12 +86,20 @@ const Dashboard = () => {
 
     // Admin approve/reject
     const handleStatus = async (id, status) => {
+        let rejection_reason = '';
+        if (status === 'rejected') {
+            rejection_reason = window.prompt('Please enter a reason for rejection:');
+            if (rejection_reason === null) return; // Cancelled
+            if (!rejection_reason.trim()) {
+                return showToast('Rejection reason is required', 'error');
+            }
+        }
         try {
-            await api.put(`/bookings/${id}/status`, { status });
-            setBookings(prev => prev.map(b => b._id === id ? { ...b, status } : b));
+            await api.put(`/bookings/${id}/status`, { status, rejection_reason });
+            setBookings(prev => prev.map(b => b._id === id ? { ...b, status, rejection_reason } : b));
             showToast(`Booking ${status}! ✓`, status === 'approved' ? 'success' : 'info');
-        } catch {
-            showToast('Failed to update status', 'error');
+        } catch (err) {
+            showToast(err.response?.data?.message || 'Failed to update status', 'error');
         }
     };
 
@@ -354,7 +362,14 @@ const Dashboard = () => {
                                                 <td className="py-3 text-white font-medium">{b.user?.username || b.user}</td>
                                                 <td className="py-3 text-gray-300">{b.venue?.name || b.venue}</td>
                                                 <td className="py-3 text-gray-300">{new Date(b.date).toLocaleDateString()}</td>
-                                                <td className="py-3 text-gray-400">{b.purpose?.slice(0, 30)}</td>
+                                                <td className="py-3 text-gray-400">
+                                                    {b.purpose?.slice(0, 30)}
+                                                    {b.status === 'rejected' && b.rejection_reason && (
+                                                        <div className="text-[10px] text-red-400 mt-1 italic">
+                                                            Reason: {b.rejection_reason}
+                                                        </div>
+                                                    )}
+                                                </td>
                                                 <td className="py-3"><StatusBadge status={b.status} /></td>
                                             </tr>
                                         ))}

@@ -1,6 +1,7 @@
 const Booking = require('../models/Booking');
 const Venue = require('../models/Venue');
 const Notification = require('../models/Notification');
+const User = require('../models/User');
 
 // ... [createBooking & getBookings omitted for brevity] ...
 // We will replace the whole file to ensure clean imports & functions
@@ -69,6 +70,21 @@ exports.createBooking = async (req, res) => {
         });
 
         await newBooking.save();
+
+        // REQ_05: Notify the relevant admin about the new booking request
+        const venueDoc = await Venue.findById(venue_id);
+        const adminRole = venueDoc && venueDoc.type === 'seminar_hall' ? 'seminar_admin' : 'classroom_admin';
+        const admins = await User.find({ role: { $in: [adminRole, 'sysadmin'] } });
+        const notifPromises = admins.map(admin =>
+            new Notification({
+                user: admin._id,
+                title: '📋 New Booking Request',
+                message: `A new booking request has been submitted for ${venueDoc ? venueDoc.name : 'a venue'} on ${new Date(date).toLocaleDateString()} from ${start_time} to ${end_time}. Please review it.`,
+                type: 'info'
+            }).save()
+        );
+        await Promise.all(notifPromises);
+
         res.status(201).json(newBooking);
     } catch (err) {
         console.error(err.message);
@@ -103,7 +119,7 @@ exports.getBookings = async (req, res) => {
 // @access  Private (Admins only)
 exports.updateBookingStatus = async (req, res) => {
     try {
-        const { status } = req.body;
+        const { status, rejection_reason } = req.body;
 
         // Check role
         if (!['classroom_admin', 'seminar_admin', 'sysadmin'].includes(req.user.role)) {
@@ -114,22 +130,34 @@ exports.updateBookingStatus = async (req, res) => {
             return res.status(400).json({ message: 'Invalid status' });
         }
 
+        // REQ_09: Require a rejection reason when rejecting
+        if (status === 'rejected' && !rejection_reason) {
+            return res.status(400).json({ message: 'Please provide a reason for rejection.' });
+        }
+
         const booking = await Booking.findById(req.params.id).populate('venue_id');
         if (!booking) {
             return res.status(404).json({ message: 'Booking not found' });
         }
 
         booking.status = status;
+        if (status === 'rejected') {
+            booking.rejection_reason = rejection_reason;
+        }
         await booking.save();
 
         // GENERATE NOTIFICATION FOR THE USER
         const venueName = booking.venue_id ? booking.venue_id.name : 'a venue';
         const formattedDate = new Date(booking.date).toLocaleDateString();
 
+        const notifMessage = status === 'approved'
+            ? `Your request for ${venueName} on ${formattedDate} from ${booking.start_time} to ${booking.end_time} was approved.`
+            : `Your request for ${venueName} on ${formattedDate} was rejected. Reason: ${rejection_reason}`;
+
         const newNotification = new Notification({
             user: booking.user_id,
             title: `Booking ${status === 'approved' ? 'Approved ✅' : 'Rejected ❌'}`,
-            message: `Your request for ${venueName} on ${formattedDate} from ${booking.start_time} to ${booking.end_time} was ${status}.`,
+            message: notifMessage,
             type: status === 'approved' ? 'success' : 'error'
         });
         await newNotification.save();
