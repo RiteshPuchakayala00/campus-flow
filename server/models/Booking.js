@@ -41,6 +41,14 @@ const bookingSchema = new mongoose.Schema({
     rejection_reason: {
         type: String,
         default: ''
+    },
+    event_name: {
+        type: String,
+        trim: true
+    },
+    participants_count: {
+        type: Number,
+        min: 0
     }
 }, { timestamps: true });
 

@@ -2,6 +2,7 @@ const Booking = require('../models/Booking');
 const Venue = require('../models/Venue');
 const Notification = require('../models/Notification');
 const User = require('../models/User');
+const AuditLog = require('../models/AuditLog');
 
 // ... [createBooking & getBookings omitted for brevity] ...
 // We will replace the whole file to ensure clean imports & functions
@@ -13,7 +14,7 @@ exports.createBooking = async (req, res) => {
     // ... [createBooking omitted for brevity] ...
     // I need to properly include it, let me just add the function at the bottom instead of replacing.
     try {
-        const { venue_id, date, start_time, end_time, purpose } = req.body;
+        const { venue_id, date, start_time, end_time, purpose, event_name, participants_count } = req.body;
 
         // 1. Basic Validation
         if (!venue_id || !date || !start_time || !end_time || !purpose) {
@@ -24,6 +25,13 @@ exports.createBooking = async (req, res) => {
         const venue = await Venue.findById(venue_id);
         if (!venue) {
             return res.status(404).json({ message: 'Venue not found' });
+        }
+
+        // REQ_19: Validation for Seminar Hall events
+        if (venue.type === 'seminar_hall') {
+            if (!event_name || !participants_count) {
+                return res.status(400).json({ message: 'Please provide Event Name and Participants Count for seminar hall bookings.' });
+            }
         }
 
         // 3. Prevent Double Booking
@@ -66,6 +74,8 @@ exports.createBooking = async (req, res) => {
             start_time,
             end_time,
             purpose,
+            event_name,
+            participants_count,
             status: 'pending' // Always starts as pending
         });
 
@@ -171,6 +181,15 @@ exports.updateBookingStatus = async (req, res) => {
             type: status === 'approved' ? 'success' : 'error'
         });
         await newNotification.save();
+
+        // REQ_12: MAINTAIN AUDIT LOG
+        const newAuditLog = new AuditLog({
+            booking_id: booking._id,
+            admin_id: req.user.id,
+            action: status,
+            reason: status === 'rejected' ? rejection_reason : 'Approved by Admin'
+        });
+        await newAuditLog.save();
 
         res.json(booking);
     } catch (err) {

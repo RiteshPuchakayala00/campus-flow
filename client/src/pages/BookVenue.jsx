@@ -15,6 +15,8 @@ const BookVenue = () => {
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [purpose, setPurpose] = useState('');
+    const [eventName, setEventName] = useState('');
+    const [participantsCount, setParticipantsCount] = useState('');
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [canWaitlist, setCanWaitlist] = useState(false);
@@ -33,7 +35,16 @@ const BookVenue = () => {
         }
         setLoading(true);
         try {
-            await api.post('/bookings', { venue_id: id, date, start_time: startTime, end_time: endTime, purpose, isWaitlist });
+            await api.post('/bookings', {
+                venue_id: id,
+                date,
+                start_time: startTime,
+                end_time: endTime,
+                purpose,
+                event_name: eventName,
+                participants_count: participantsCount,
+                isWaitlist
+            });
             setSuccess(true);
             showToast(isWaitlist ? 'Added to waitlist! ✓' : 'Booking request submitted! ✓', 'success');
             setTimeout(() => navigate('/dashboard'), 1800);
@@ -123,11 +134,25 @@ const BookVenue = () => {
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-1.5">Purpose / Description</label>
                             <textarea value={purpose} onChange={e => setPurpose(e.target.value)}
                                 rows={3} className="input-dark resize-none"
                                 placeholder="e.g. CS101 extra class, Department seminar..." required />
                         </div>
+
+                        {venue.type === 'seminar_hall' && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1.5">Event Name</label>
+                                    <input type="text" value={eventName} onChange={e => setEventName(e.target.value)}
+                                        className="input-dark" placeholder="e.g. AI Symposium" required />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1.5">Expected Participants</label>
+                                    <input type="number" value={participantsCount} onChange={e => setParticipantsCount(e.target.value)}
+                                        className="input-dark" placeholder="e.g. 150" required />
+                                </div>
+                            </div>
+                        )}
 
                         {canWaitlist ? (
                             <div className="flex gap-3 mt-2">

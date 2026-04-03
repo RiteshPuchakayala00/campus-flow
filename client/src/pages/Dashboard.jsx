@@ -311,9 +311,16 @@ const Dashboard = () => {
                                             {pendingBookings.map(b => (
                                                 <tr key={b._id}>
                                                     <td className="py-3 text-white font-medium">{(b.user?.username || b.user_id?.username) || (b.user || b.user_id || 'Unknown')}</td>
-                                                    <td className="py-3 text-gray-300">{b.venue?.name || b.venue}</td>
+                                                    <td className="py-3 text-gray-300">{b.venue_id?.name || b.venue_id || b.venue?.name || b.venue}</td>
                                                     <td className="py-3 text-gray-300">{new Date(b.date).toLocaleDateString()}</td>
-                                                    <td className="py-3 text-gray-400">{b.purpose?.slice(0, 30)}</td>
+                                                    <td className="py-3 text-gray-400">
+                                                        <div className="font-medium text-white">{b.purpose?.slice(0, 30)}</div>
+                                                        {b.event_name && (
+                                                            <div className="text-[10px] text-red-500 font-bold mt-1 uppercase tracking-wider">
+                                                                {b.event_name} • {b.participants_count} folks
+                                                            </div>
+                                                        )}
+                                                    </td>
                                                     <td className="py-3">
                                                         <div className="flex gap-2">
                                                             <button onClick={() => handleStatus(b._id, 'approved')}
